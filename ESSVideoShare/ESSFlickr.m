@@ -70,7 +70,7 @@
 	
 	//get authToken from Prefs
 	self._authToken = [[[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:@"essflickr" prefix:@"essflickrvideoupload"] autorelease];
-	if (authToken != nil)
+	if (self._authToken != nil)
 	{
 		BOOL tokenInvalid = NO;
 		BOOL canUpload = [self _canUploadVideosKeyInvalidCheck:&tokenInvalid];
