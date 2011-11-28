@@ -214,7 +214,7 @@ And start the upload session like so:
 
 ## ESSFacebook
 
-![Login](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/1.png "Login")  
+![Login](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/0.png "Login")  
 ![Confirm Login](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/2.png "Confirm Login")  
 ![Movie Metadata](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/3.png "Movie metadata")  
 ![Upload Progress](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/4.png "Upload progress")  
