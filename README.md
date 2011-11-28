@@ -229,7 +229,8 @@ And start the upload session like so:
 ![Done](http://www.eternalstorms.at/opensource/ESSVideoShare/flickr/5.png "Done")
 
 ## Requirements
-This code works on OS X Lion and later.
+This code works on OS X Lion and later.  
+Developed with Xcode 4.2.1  
 
 ## Support
 The framework and code is provided as-is, but if you need help or have suggestions, you can contact me anytime at [opensource@eternalstorms.at](mailto:opensource@eternalstorms.at)
