@@ -59,7 +59,8 @@ Initialize a ESSYouTube object
     ESSYouTube *youTube = [[ESSYouTube alloc] initWithDelegate:delegate
 													developerKey:youTubeAPIKey];
 
-Now on to implementing the delegate methods. There are two:
+Now on to implementing the delegate methods. In your delegate's interface declaration, add ESSYouTubeDelegate.  
+There are two methods:
 
     - (NSWindow *)ESSYouTubeNeedsWindowToAttachTo:(ESSYouTube *)youtube
     {
@@ -99,7 +100,8 @@ Initialize the ESSVimeo object
 												
 Something you will notice is the BOOL you have to pass into canUploadToPlusOnly:. If your API key can only upload for users who have Vimeo PLUS accounts, pass YES. If your API key can upload to free Vimeo accounts as well, pass NO.
 
-Again, implement the necessary delegate methods, which are pretty much the same as for YouTube:
+Again, implement the necessary delegate methods. In your delegate's interface declaration, add ESSVimeoDelegate.  
+The methods are:
 
     - (NSWindow *)ESSVimeoNeedsWindowToAttachWindowTo:(ESSVimeo *)uploader
 	{
@@ -135,6 +137,7 @@ By now, I think you get the hang of it:
     NSString *facebookAppSecret = @"yourFacebookAppSecret";
     ESSFacebook *facebook = [[ESSFacebook alloc] initWithDelegate:delegate appID:facebookAppID appSecret:facebookAppSecret];
 
+In your delegate's interface declaration, add ESSFacebookDelegate.  
 Implement the two delegate methods:
 
     - (NSWindow *)ESSFacebookNeedsWindowToAttachTo:(ESSFacebook *)facebook
@@ -169,6 +172,7 @@ Initialize the object:
     NSString *flickrAppSecret = @"yourFlickrAppSecret";
     ESSFlickr *flickr = [[ESSFlickr alloc] initWithDelegate:self applicationKey:flickrAppKey applicationSecret:flickrAppSecret];
 
+In your delegate's interface declaration, add ESSFlickrDelegate.  
 Implement the delegate methods:
 
     - (NSWindow *)ESSFlickrNeedsWindowToAttachTo:(ESSFlickr *)flickr
