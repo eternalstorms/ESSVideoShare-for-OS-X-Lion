@@ -242,3 +242,5 @@ OAuthConsumer framework (http://code.google.com/p/oauthconsumer/ , made availabl
 
 ## Support
 The framework and code is provided as-is, but if you need help or have suggestions, you can contact me anytime at [opensource@eternalstorms.at](mailto:opensource@eternalstorms.at)
+
+For other Open Source projects of mine, please visit http://www.eternalstorms.at/opensource
