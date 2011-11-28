@@ -1,0 +1,595 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		393EC21E1482702000F7074A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 393EC21D1482702000F7074A /* Cocoa.framework */; };
+		393EC2281482702100F7074A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 393EC2261482702100F7074A /* InfoPlist.strings */; };
+		393EC237148270A300F7074A /* Vimeo.png in Resources */ = {isa = PBXBuildFile; fileRef = 393EC232148270A300F7074A /* Vimeo.png */; };
+		393EC238148270A300F7074A /* Flickr_Progress.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 393EC233148270A300F7074A /* Flickr_Progress.tiff */; };
+		393EC239148270A300F7074A /* publish-youtube.tif in Resources */ = {isa = PBXBuildFile; fileRef = 393EC234148270A300F7074A /* publish-youtube.tif */; };
+		393EC23A148270A300F7074A /* fb.png in Resources */ = {isa = PBXBuildFile; fileRef = 393EC235148270A300F7074A /* fb.png */; };
+		393EC23B148270A300F7074A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 393EC236148270A300F7074A /* Localizable.strings */; };
+		393EC23E1482712B00F7074A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 393EC23D1482712B00F7074A /* WebKit.framework */; };
+		393EC2471482731900F7074A /* ESSFacebook.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2421482731900F7074A /* ESSFacebook.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2481482731900F7074A /* ESSFacebook.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2431482731900F7074A /* ESSFacebook.m */; };
+		393EC2491482731900F7074A /* ESSFacebookWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2441482731900F7074A /* ESSFacebookWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC24A1482731900F7074A /* ESSFacebookWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2451482731900F7074A /* ESSFacebookWindowController.m */; };
+		393EC24B1482731900F7074A /* ESSFacebookWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 393EC2461482731900F7074A /* ESSFacebookWindow.xib */; };
+		393EC2521482733800F7074A /* ESSYouTube.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC24D1482733800F7074A /* ESSYouTube.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2531482733800F7074A /* ESSYouTube.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC24E1482733800F7074A /* ESSYouTube.m */; };
+		393EC2541482733800F7074A /* ESSYouTubeWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC24F1482733800F7074A /* ESSYouTubeWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2551482733800F7074A /* ESSYouTubeWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2501482733800F7074A /* ESSYouTubeWindowController.m */; };
+		393EC2561482733800F7074A /* ESSYouTubeWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 393EC2511482733800F7074A /* ESSYouTubeWindow.xib */; };
+		393EC25D1482735400F7074A /* ESSVimeo.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2581482735400F7074A /* ESSVimeo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC25E1482735400F7074A /* ESSVimeo.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2591482735400F7074A /* ESSVimeo.m */; };
+		393EC25F1482735400F7074A /* ESSVimeoWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC25A1482735400F7074A /* ESSVimeoWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2601482735400F7074A /* ESSVimeoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC25B1482735400F7074A /* ESSVimeoWindowController.m */; };
+		393EC2611482735400F7074A /* essvimeoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 393EC25C1482735400F7074A /* essvimeoWindow.xib */; };
+		393EC2681482737600F7074A /* ESSFlickr.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2631482737600F7074A /* ESSFlickr.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2691482737600F7074A /* ESSFlickr.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2641482737600F7074A /* ESSFlickr.m */; };
+		393EC26A1482737600F7074A /* ESSFlickrWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2651482737600F7074A /* ESSFlickrWindowController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC26B1482737600F7074A /* ESSFlickrWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2661482737600F7074A /* ESSFlickrWindowController.m */; };
+		393EC26C1482737600F7074A /* ESSFlickrWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 393EC2671482737600F7074A /* ESSFlickrWindow.xib */; };
+		393EC26E148275DD00F7074A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 393EC26D148275DD00F7074A /* AVFoundation.framework */; };
+		393EC2A114827C0A00F7074A /* ESSVideoShare.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC22A1482702100F7074A /* ESSVideoShare.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2B714828ED300F7074A /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2B514828ED300F7074A /* Base64Transcoder.c */; };
+		393EC2B814828ED300F7074A /* Base64Transcoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2B614828ED300F7074A /* Base64Transcoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2EB14828EE300F7074A /* NSMutableURLRequest+Parameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2B914828EE300F7074A /* NSMutableURLRequest+Parameters.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2EC14828EE300F7074A /* NSMutableURLRequest+Parameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2BA14828EE300F7074A /* NSMutableURLRequest+Parameters.m */; };
+		393EC2EF14828EE300F7074A /* NSString+URLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2BD14828EE300F7074A /* NSString+URLEncoding.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2F014828EE300F7074A /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2BE14828EE300F7074A /* NSString+URLEncoding.m */; };
+		393EC2F314828EE300F7074A /* NSURL+Base.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2C114828EE300F7074A /* NSURL+Base.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2F414828EE300F7074A /* NSURL+Base.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2C214828EE300F7074A /* NSURL+Base.m */; };
+		393EC2F714828EE300F7074A /* OAAsynchronousDataFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2C514828EE300F7074A /* OAAsynchronousDataFetcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2F814828EE300F7074A /* OAAsynchronousDataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2C614828EE300F7074A /* OAAsynchronousDataFetcher.m */; };
+		393EC2F914828EE300F7074A /* OAConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2C714828EE300F7074A /* OAConsumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2FA14828EE300F7074A /* OAConsumer.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2C814828EE300F7074A /* OAConsumer.m */; };
+		393EC2FD14828EE300F7074A /* OADataFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2CB14828EE300F7074A /* OADataFetcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC2FE14828EE300F7074A /* OADataFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2CC14828EE300F7074A /* OADataFetcher.m */; };
+		393EC30114828EE300F7074A /* OAHMAC_SHA1SignatureProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2CF14828EE300F7074A /* OAHMAC_SHA1SignatureProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC30214828EE300F7074A /* OAHMAC_SHA1SignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2D014828EE300F7074A /* OAHMAC_SHA1SignatureProvider.m */; };
+		393EC30514828EE300F7074A /* OAMutableURLRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2D314828EE300F7074A /* OAMutableURLRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC30614828EE300F7074A /* OAMutableURLRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2D414828EE300F7074A /* OAMutableURLRequest.m */; };
+		393EC30914828EE300F7074A /* OAPlaintextSignatureProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2D714828EE300F7074A /* OAPlaintextSignatureProvider.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC30A14828EE300F7074A /* OAPlaintextSignatureProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2D814828EE300F7074A /* OAPlaintextSignatureProvider.m */; };
+		393EC30D14828EE300F7074A /* OARequestParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2DB14828EE300F7074A /* OARequestParameter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC30E14828EE300F7074A /* OARequestParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2DC14828EE300F7074A /* OARequestParameter.m */; };
+		393EC31114828EE300F7074A /* OAServiceTicket.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2DF14828EE300F7074A /* OAServiceTicket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC31214828EE300F7074A /* OAServiceTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2E014828EE300F7074A /* OAServiceTicket.m */; };
+		393EC31314828EE300F7074A /* OASignatureProviding.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2E114828EE300F7074A /* OASignatureProviding.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC31414828EE300F7074A /* OATestServer.rb in Resources */ = {isa = PBXBuildFile; fileRef = 393EC2E214828EE300F7074A /* OATestServer.rb */; };
+		393EC31514828EE300F7074A /* OAToken_KeychainExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2E314828EE300F7074A /* OAToken_KeychainExtensions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC31614828EE300F7074A /* OAToken_KeychainExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2E414828EE300F7074A /* OAToken_KeychainExtensions.m */; };
+		393EC31714828EE300F7074A /* OAToken.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2E514828EE300F7074A /* OAToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC31814828EE300F7074A /* OAToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 393EC2E614828EE300F7074A /* OAToken.m */; };
+		393EC31B14828EE300F7074A /* OAuthConsumer_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2E914828EE300F7074A /* OAuthConsumer_Prefix.pch */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC31C14828EE300F7074A /* OAuthConsumer.h in Headers */ = {isa = PBXBuildFile; fileRef = 393EC2EA14828EE300F7074A /* OAuthConsumer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		393EC31E148290DD00F7074A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 393EC31D148290DD00F7074A /* Security.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		393EC26F1482767000F7074A /* Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = Frameworks;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		393EC21A1482702000F7074A /* ESSVideoShare.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ESSVideoShare.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		393EC21D1482702000F7074A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		393EC2201482702000F7074A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		393EC2211482702000F7074A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		393EC2221482702000F7074A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		393EC2251482702000F7074A /* ESSVideoShare-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ESSVideoShare-Info.plist"; sourceTree = "<group>"; };
+		393EC2271482702100F7074A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		393EC2291482702100F7074A /* ESSVideoShare-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ESSVideoShare-Prefix.pch"; sourceTree = "<group>"; };
+		393EC22A1482702100F7074A /* ESSVideoShare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESSVideoShare.h; sourceTree = "<group>"; };
+		393EC232148270A300F7074A /* Vimeo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Vimeo.png; sourceTree = "<group>"; };
+		393EC233148270A300F7074A /* Flickr_Progress.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Flickr_Progress.tiff; sourceTree = "<group>"; };
+		393EC234148270A300F7074A /* publish-youtube.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "publish-youtube.tif"; sourceTree = "<group>"; };
+		393EC235148270A300F7074A /* fb.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fb.png; sourceTree = "<group>"; };
+		393EC236148270A300F7074A /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		393EC23D1482712B00F7074A /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = ../../../../../../../../System/Library/Frameworks/WebKit.framework; sourceTree = "<group>"; };
+		393EC2421482731900F7074A /* ESSFacebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSFacebook.h; sourceTree = "<group>"; };
+		393EC2431482731900F7074A /* ESSFacebook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSFacebook.m; sourceTree = "<group>"; };
+		393EC2441482731900F7074A /* ESSFacebookWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSFacebookWindowController.h; sourceTree = "<group>"; };
+		393EC2451482731900F7074A /* ESSFacebookWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSFacebookWindowController.m; sourceTree = "<group>"; };
+		393EC2461482731900F7074A /* ESSFacebookWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ESSFacebookWindow.xib; sourceTree = "<group>"; };
+		393EC24D1482733800F7074A /* ESSYouTube.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSYouTube.h; sourceTree = "<group>"; };
+		393EC24E1482733800F7074A /* ESSYouTube.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSYouTube.m; sourceTree = "<group>"; };
+		393EC24F1482733800F7074A /* ESSYouTubeWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSYouTubeWindowController.h; sourceTree = "<group>"; };
+		393EC2501482733800F7074A /* ESSYouTubeWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSYouTubeWindowController.m; sourceTree = "<group>"; };
+		393EC2511482733800F7074A /* ESSYouTubeWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ESSYouTubeWindow.xib; sourceTree = "<group>"; };
+		393EC2581482735400F7074A /* ESSVimeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSVimeo.h; sourceTree = "<group>"; };
+		393EC2591482735400F7074A /* ESSVimeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSVimeo.m; sourceTree = "<group>"; };
+		393EC25A1482735400F7074A /* ESSVimeoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSVimeoWindowController.h; sourceTree = "<group>"; };
+		393EC25B1482735400F7074A /* ESSVimeoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSVimeoWindowController.m; sourceTree = "<group>"; };
+		393EC25C1482735400F7074A /* essvimeoWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = essvimeoWindow.xib; sourceTree = "<group>"; };
+		393EC2631482737600F7074A /* ESSFlickr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSFlickr.h; sourceTree = "<group>"; };
+		393EC2641482737600F7074A /* ESSFlickr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSFlickr.m; sourceTree = "<group>"; };
+		393EC2651482737600F7074A /* ESSFlickrWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESSFlickrWindowController.h; sourceTree = "<group>"; };
+		393EC2661482737600F7074A /* ESSFlickrWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ESSFlickrWindowController.m; sourceTree = "<group>"; };
+		393EC2671482737600F7074A /* ESSFlickrWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ESSFlickrWindow.xib; sourceTree = "<group>"; };
+		393EC26D148275DD00F7074A /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = ../../../../../../../../System/Library/Frameworks/AVFoundation.framework; sourceTree = "<group>"; };
+		393EC2B514828ED300F7074A /* Base64Transcoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Base64Transcoder.c; sourceTree = "<group>"; };
+		393EC2B614828ED300F7074A /* Base64Transcoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64Transcoder.h; sourceTree = "<group>"; };
+		393EC2B914828EE300F7074A /* NSMutableURLRequest+Parameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableURLRequest+Parameters.h"; sourceTree = "<group>"; };
+		393EC2BA14828EE300F7074A /* NSMutableURLRequest+Parameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableURLRequest+Parameters.m"; sourceTree = "<group>"; };
+		393EC2BD14828EE300F7074A /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		393EC2BE14828EE300F7074A /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		393EC2C114828EE300F7074A /* NSURL+Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+Base.h"; sourceTree = "<group>"; };
+		393EC2C214828EE300F7074A /* NSURL+Base.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+Base.m"; sourceTree = "<group>"; };
+		393EC2C514828EE300F7074A /* OAAsynchronousDataFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAAsynchronousDataFetcher.h; sourceTree = "<group>"; };
+		393EC2C614828EE300F7074A /* OAAsynchronousDataFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAAsynchronousDataFetcher.m; sourceTree = "<group>"; };
+		393EC2C714828EE300F7074A /* OAConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAConsumer.h; sourceTree = "<group>"; };
+		393EC2C814828EE300F7074A /* OAConsumer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAConsumer.m; sourceTree = "<group>"; };
+		393EC2CB14828EE300F7074A /* OADataFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OADataFetcher.h; sourceTree = "<group>"; };
+		393EC2CC14828EE300F7074A /* OADataFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OADataFetcher.m; sourceTree = "<group>"; };
+		393EC2CF14828EE300F7074A /* OAHMAC_SHA1SignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAHMAC_SHA1SignatureProvider.h; sourceTree = "<group>"; };
+		393EC2D014828EE300F7074A /* OAHMAC_SHA1SignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAHMAC_SHA1SignatureProvider.m; sourceTree = "<group>"; };
+		393EC2D314828EE300F7074A /* OAMutableURLRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAMutableURLRequest.h; sourceTree = "<group>"; };
+		393EC2D414828EE300F7074A /* OAMutableURLRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAMutableURLRequest.m; sourceTree = "<group>"; };
+		393EC2D714828EE300F7074A /* OAPlaintextSignatureProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAPlaintextSignatureProvider.h; sourceTree = "<group>"; };
+		393EC2D814828EE300F7074A /* OAPlaintextSignatureProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAPlaintextSignatureProvider.m; sourceTree = "<group>"; };
+		393EC2DB14828EE300F7074A /* OARequestParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OARequestParameter.h; sourceTree = "<group>"; };
+		393EC2DC14828EE300F7074A /* OARequestParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OARequestParameter.m; sourceTree = "<group>"; };
+		393EC2DF14828EE300F7074A /* OAServiceTicket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAServiceTicket.h; sourceTree = "<group>"; };
+		393EC2E014828EE300F7074A /* OAServiceTicket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAServiceTicket.m; sourceTree = "<group>"; };
+		393EC2E114828EE300F7074A /* OASignatureProviding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OASignatureProviding.h; sourceTree = "<group>"; };
+		393EC2E214828EE300F7074A /* OATestServer.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = OATestServer.rb; sourceTree = "<group>"; };
+		393EC2E314828EE300F7074A /* OAToken_KeychainExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAToken_KeychainExtensions.h; sourceTree = "<group>"; };
+		393EC2E414828EE300F7074A /* OAToken_KeychainExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAToken_KeychainExtensions.m; sourceTree = "<group>"; };
+		393EC2E514828EE300F7074A /* OAToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAToken.h; sourceTree = "<group>"; };
+		393EC2E614828EE300F7074A /* OAToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OAToken.m; sourceTree = "<group>"; };
+		393EC2E914828EE300F7074A /* OAuthConsumer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumer_Prefix.pch; sourceTree = "<group>"; };
+		393EC2EA14828EE300F7074A /* OAuthConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumer.h; sourceTree = "<group>"; };
+		393EC31D148290DD00F7074A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = ../../../../../../../../System/Library/Frameworks/Security.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		393EC2161482702000F7074A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				393EC21E1482702000F7074A /* Cocoa.framework in Frameworks */,
+				393EC23E1482712B00F7074A /* WebKit.framework in Frameworks */,
+				393EC26E148275DD00F7074A /* AVFoundation.framework in Frameworks */,
+				393EC31E148290DD00F7074A /* Security.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		393EC20E1482702000F7074A = {
+			isa = PBXGroup;
+			children = (
+				393EC2231482702000F7074A /* ESSVideoShare */,
+				393EC21C1482702000F7074A /* Frameworks */,
+				393EC21B1482702000F7074A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		393EC21B1482702000F7074A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				393EC21A1482702000F7074A /* ESSVideoShare.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		393EC21C1482702000F7074A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				393EC31D148290DD00F7074A /* Security.framework */,
+				393EC26D148275DD00F7074A /* AVFoundation.framework */,
+				393EC23D1482712B00F7074A /* WebKit.framework */,
+				393EC21D1482702000F7074A /* Cocoa.framework */,
+				393EC21F1482702000F7074A /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		393EC21F1482702000F7074A /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2201482702000F7074A /* AppKit.framework */,
+				393EC2211482702000F7074A /* CoreData.framework */,
+				393EC2221482702000F7074A /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		393EC2231482702000F7074A /* ESSVideoShare */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2B414828EC400F7074A /* OAuth */,
+				393EC22A1482702100F7074A /* ESSVideoShare.h */,
+				393EC2411482731000F7074A /* Facebook */,
+				393EC24C1482732B00F7074A /* YouTube */,
+				393EC2571482733F00F7074A /* Vimeo */,
+				393EC2621482735C00F7074A /* Flickr */,
+				393EC2241482702000F7074A /* Supporting Files */,
+			);
+			path = ESSVideoShare;
+			sourceTree = "<group>";
+		};
+		393EC2241482702000F7074A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				393EC23C148270AF00F7074A /* Images */,
+				393EC236148270A300F7074A /* Localizable.strings */,
+				393EC2251482702000F7074A /* ESSVideoShare-Info.plist */,
+				393EC2261482702100F7074A /* InfoPlist.strings */,
+				393EC2291482702100F7074A /* ESSVideoShare-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		393EC23C148270AF00F7074A /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				393EC232148270A300F7074A /* Vimeo.png */,
+				393EC233148270A300F7074A /* Flickr_Progress.tiff */,
+				393EC234148270A300F7074A /* publish-youtube.tif */,
+				393EC235148270A300F7074A /* fb.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		393EC2411482731000F7074A /* Facebook */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2421482731900F7074A /* ESSFacebook.h */,
+				393EC2431482731900F7074A /* ESSFacebook.m */,
+				393EC2441482731900F7074A /* ESSFacebookWindowController.h */,
+				393EC2451482731900F7074A /* ESSFacebookWindowController.m */,
+				393EC2461482731900F7074A /* ESSFacebookWindow.xib */,
+			);
+			name = Facebook;
+			sourceTree = "<group>";
+		};
+		393EC24C1482732B00F7074A /* YouTube */ = {
+			isa = PBXGroup;
+			children = (
+				393EC24D1482733800F7074A /* ESSYouTube.h */,
+				393EC24E1482733800F7074A /* ESSYouTube.m */,
+				393EC24F1482733800F7074A /* ESSYouTubeWindowController.h */,
+				393EC2501482733800F7074A /* ESSYouTubeWindowController.m */,
+				393EC2511482733800F7074A /* ESSYouTubeWindow.xib */,
+			);
+			name = YouTube;
+			sourceTree = "<group>";
+		};
+		393EC2571482733F00F7074A /* Vimeo */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2581482735400F7074A /* ESSVimeo.h */,
+				393EC2591482735400F7074A /* ESSVimeo.m */,
+				393EC25A1482735400F7074A /* ESSVimeoWindowController.h */,
+				393EC25B1482735400F7074A /* ESSVimeoWindowController.m */,
+				393EC25C1482735400F7074A /* essvimeoWindow.xib */,
+			);
+			name = Vimeo;
+			sourceTree = "<group>";
+		};
+		393EC2621482735C00F7074A /* Flickr */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2631482737600F7074A /* ESSFlickr.h */,
+				393EC2641482737600F7074A /* ESSFlickr.m */,
+				393EC2651482737600F7074A /* ESSFlickrWindowController.h */,
+				393EC2661482737600F7074A /* ESSFlickrWindowController.m */,
+				393EC2671482737600F7074A /* ESSFlickrWindow.xib */,
+			);
+			name = Flickr;
+			sourceTree = "<group>";
+		};
+		393EC2B414828EC400F7074A /* OAuth */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2B514828ED300F7074A /* Base64Transcoder.c */,
+				393EC2B614828ED300F7074A /* Base64Transcoder.h */,
+				393EC2B914828EE300F7074A /* NSMutableURLRequest+Parameters.h */,
+				393EC2BA14828EE300F7074A /* NSMutableURLRequest+Parameters.m */,
+				393EC2BD14828EE300F7074A /* NSString+URLEncoding.h */,
+				393EC2BE14828EE300F7074A /* NSString+URLEncoding.m */,
+				393EC2C114828EE300F7074A /* NSURL+Base.h */,
+				393EC2C214828EE300F7074A /* NSURL+Base.m */,
+				393EC2C514828EE300F7074A /* OAAsynchronousDataFetcher.h */,
+				393EC2C614828EE300F7074A /* OAAsynchronousDataFetcher.m */,
+				393EC2C714828EE300F7074A /* OAConsumer.h */,
+				393EC2C814828EE300F7074A /* OAConsumer.m */,
+				393EC2CB14828EE300F7074A /* OADataFetcher.h */,
+				393EC2CC14828EE300F7074A /* OADataFetcher.m */,
+				393EC2CF14828EE300F7074A /* OAHMAC_SHA1SignatureProvider.h */,
+				393EC2D014828EE300F7074A /* OAHMAC_SHA1SignatureProvider.m */,
+				393EC2D314828EE300F7074A /* OAMutableURLRequest.h */,
+				393EC2D414828EE300F7074A /* OAMutableURLRequest.m */,
+				393EC2D714828EE300F7074A /* OAPlaintextSignatureProvider.h */,
+				393EC2D814828EE300F7074A /* OAPlaintextSignatureProvider.m */,
+				393EC2DB14828EE300F7074A /* OARequestParameter.h */,
+				393EC2DC14828EE300F7074A /* OARequestParameter.m */,
+				393EC2DF14828EE300F7074A /* OAServiceTicket.h */,
+				393EC2E014828EE300F7074A /* OAServiceTicket.m */,
+				393EC2E114828EE300F7074A /* OASignatureProviding.h */,
+				393EC2E214828EE300F7074A /* OATestServer.rb */,
+				393EC2E314828EE300F7074A /* OAToken_KeychainExtensions.h */,
+				393EC2E414828EE300F7074A /* OAToken_KeychainExtensions.m */,
+				393EC2E514828EE300F7074A /* OAToken.h */,
+				393EC2E614828EE300F7074A /* OAToken.m */,
+				393EC2E914828EE300F7074A /* OAuthConsumer_Prefix.pch */,
+				393EC2EA14828EE300F7074A /* OAuthConsumer.h */,
+			);
+			name = OAuth;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		393EC2171482702000F7074A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				393EC2A114827C0A00F7074A /* ESSVideoShare.h in Headers */,
+				393EC2471482731900F7074A /* ESSFacebook.h in Headers */,
+				393EC2521482733800F7074A /* ESSYouTube.h in Headers */,
+				393EC25D1482735400F7074A /* ESSVimeo.h in Headers */,
+				393EC2681482737600F7074A /* ESSFlickr.h in Headers */,
+				393EC2491482731900F7074A /* ESSFacebookWindowController.h in Headers */,
+				393EC2541482733800F7074A /* ESSYouTubeWindowController.h in Headers */,
+				393EC25F1482735400F7074A /* ESSVimeoWindowController.h in Headers */,
+				393EC26A1482737600F7074A /* ESSFlickrWindowController.h in Headers */,
+				393EC2B814828ED300F7074A /* Base64Transcoder.h in Headers */,
+				393EC2EB14828EE300F7074A /* NSMutableURLRequest+Parameters.h in Headers */,
+				393EC2EF14828EE300F7074A /* NSString+URLEncoding.h in Headers */,
+				393EC2F314828EE300F7074A /* NSURL+Base.h in Headers */,
+				393EC2F714828EE300F7074A /* OAAsynchronousDataFetcher.h in Headers */,
+				393EC2F914828EE300F7074A /* OAConsumer.h in Headers */,
+				393EC2FD14828EE300F7074A /* OADataFetcher.h in Headers */,
+				393EC30114828EE300F7074A /* OAHMAC_SHA1SignatureProvider.h in Headers */,
+				393EC30514828EE300F7074A /* OAMutableURLRequest.h in Headers */,
+				393EC30914828EE300F7074A /* OAPlaintextSignatureProvider.h in Headers */,
+				393EC30D14828EE300F7074A /* OARequestParameter.h in Headers */,
+				393EC31114828EE300F7074A /* OAServiceTicket.h in Headers */,
+				393EC31314828EE300F7074A /* OASignatureProviding.h in Headers */,
+				393EC31514828EE300F7074A /* OAToken_KeychainExtensions.h in Headers */,
+				393EC31714828EE300F7074A /* OAToken.h in Headers */,
+				393EC31B14828EE300F7074A /* OAuthConsumer_Prefix.pch in Headers */,
+				393EC31C14828EE300F7074A /* OAuthConsumer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		393EC2191482702000F7074A /* ESSVideoShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 393EC22F1482702100F7074A /* Build configuration list for PBXNativeTarget "ESSVideoShare" */;
+			buildPhases = (
+				393EC2151482702000F7074A /* Sources */,
+				393EC26F1482767000F7074A /* Frameworks */,
+				393EC2161482702000F7074A /* Frameworks */,
+				393EC2171482702000F7074A /* Headers */,
+				393EC2181482702000F7074A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ESSVideoShare;
+			productName = ESSVideoShare;
+			productReference = 393EC21A1482702000F7074A /* ESSVideoShare.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		393EC2101482702000F7074A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Eternal Storms Software";
+			};
+			buildConfigurationList = 393EC2131482702000F7074A /* Build configuration list for PBXProject "ESSVideoShare" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 393EC20E1482702000F7074A;
+			productRefGroup = 393EC21B1482702000F7074A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				393EC2191482702000F7074A /* ESSVideoShare */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		393EC2181482702000F7074A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				393EC2281482702100F7074A /* InfoPlist.strings in Resources */,
+				393EC237148270A300F7074A /* Vimeo.png in Resources */,
+				393EC238148270A300F7074A /* Flickr_Progress.tiff in Resources */,
+				393EC239148270A300F7074A /* publish-youtube.tif in Resources */,
+				393EC23A148270A300F7074A /* fb.png in Resources */,
+				393EC23B148270A300F7074A /* Localizable.strings in Resources */,
+				393EC24B1482731900F7074A /* ESSFacebookWindow.xib in Resources */,
+				393EC2561482733800F7074A /* ESSYouTubeWindow.xib in Resources */,
+				393EC2611482735400F7074A /* essvimeoWindow.xib in Resources */,
+				393EC26C1482737600F7074A /* ESSFlickrWindow.xib in Resources */,
+				393EC31414828EE300F7074A /* OATestServer.rb in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		393EC2151482702000F7074A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				393EC2481482731900F7074A /* ESSFacebook.m in Sources */,
+				393EC24A1482731900F7074A /* ESSFacebookWindowController.m in Sources */,
+				393EC2531482733800F7074A /* ESSYouTube.m in Sources */,
+				393EC2551482733800F7074A /* ESSYouTubeWindowController.m in Sources */,
+				393EC25E1482735400F7074A /* ESSVimeo.m in Sources */,
+				393EC2601482735400F7074A /* ESSVimeoWindowController.m in Sources */,
+				393EC2691482737600F7074A /* ESSFlickr.m in Sources */,
+				393EC26B1482737600F7074A /* ESSFlickrWindowController.m in Sources */,
+				393EC2B714828ED300F7074A /* Base64Transcoder.c in Sources */,
+				393EC2EC14828EE300F7074A /* NSMutableURLRequest+Parameters.m in Sources */,
+				393EC2F014828EE300F7074A /* NSString+URLEncoding.m in Sources */,
+				393EC2F414828EE300F7074A /* NSURL+Base.m in Sources */,
+				393EC2F814828EE300F7074A /* OAAsynchronousDataFetcher.m in Sources */,
+				393EC2FA14828EE300F7074A /* OAConsumer.m in Sources */,
+				393EC2FE14828EE300F7074A /* OADataFetcher.m in Sources */,
+				393EC30214828EE300F7074A /* OAHMAC_SHA1SignatureProvider.m in Sources */,
+				393EC30614828EE300F7074A /* OAMutableURLRequest.m in Sources */,
+				393EC30A14828EE300F7074A /* OAPlaintextSignatureProvider.m in Sources */,
+				393EC30E14828EE300F7074A /* OARequestParameter.m in Sources */,
+				393EC31214828EE300F7074A /* OAServiceTicket.m in Sources */,
+				393EC31614828EE300F7074A /* OAToken_KeychainExtensions.m in Sources */,
+				393EC31814828EE300F7074A /* OAToken.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		393EC2261482702100F7074A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				393EC2271482702100F7074A /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		393EC22D1482702100F7074A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		393EC22E1482702100F7074A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		393EC2301482702100F7074A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ESSVideoShare/ESSVideoShare-Prefix.pch";
+				INFOPLIST_FILE = "ESSVideoShare/ESSVideoShare-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Debug;
+		};
+		393EC2311482702100F7074A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "ESSVideoShare/ESSVideoShare-Prefix.pch";
+				INFOPLIST_FILE = "ESSVideoShare/ESSVideoShare-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		393EC2131482702000F7074A /* Build configuration list for PBXProject "ESSVideoShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				393EC22D1482702100F7074A /* Debug */,
+				393EC22E1482702100F7074A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		393EC22F1482702100F7074A /* Build configuration list for PBXNativeTarget "ESSVideoShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				393EC2301482702100F7074A /* Debug */,
+				393EC2311482702100F7074A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 393EC2101482702000F7074A /* Project object */;
+}

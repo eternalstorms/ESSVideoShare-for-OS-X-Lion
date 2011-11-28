@@ -1,0 +1,58 @@
+/* 
+  Localizable.strings
+  Zlidez
+
+  Created by Matthias Gansrigler on 13.10.11.
+  Copyright (c) 2011 Eternal Storms Software. All rights reserved.
+*/
+
+/*
+ FACEBOOK
+*/
+
+"ESSFacebookUploadPercentageDone" = "%ld%% uploaded";
+"ESSFacebookDefaultTitle" = "Movie";
+"ESSFacebookUnknownUsername" = "Unknown Username";
+"ESSFacebookButtonDone" = "Done";
+"ESSFacebookUploadSucceeded" = "Publishing to Facebook was successful.";
+"ESSFacebookUploadFailed" = "Publishing to Facebook has failed.";
+
+/*
+YOUTUBE
+*/
+"ESSYouTubeCategoryURLString" = "http://gdata.youtube.com/schemas/2007/categories.cat?hl=en-US"; //http://code.google.com/apis/youtube/2.0/reference.html#YouTube_Category_List
+"ESSYouTubeUploadPercentageDone" = "%ld%% uploaded";
+"ESSYouTubeWaitingForYouTubeToProcessVideo" = "Waiting for YouTube to process the upload...";
+"ESSYouTubeUploadFailed" = "Publishing to YouTube has failed. The file probably couldn't be converted.";
+"ESSYouTubeUploadSucceeded" = "Publishing to YouTube was successful.";
+"ESSYouTubeDefaultTitle" = "Movie";
+"ESSYouTubeInitializingUpload" = "Initializing Upload...";
+
+/*
+FLICKR
+*/
+
+"ESSFlickrMovieTooLongTitle" = "Your movie couldn't be published to Flickr because it is longe than 90 seconds.";
+"ESSFlickrOKButton" = "OK";
+"ESSFlickrMovieTooLongMessage" = "You can save the movie to your hard disk, open it with QuickTime Player X, trim it there and then try uploading it again.";
+"ESSFlickrInitializingUpload" = "Initializing Upload...";
+"ESSFlickrUploadPercentageDone" = "%ld%% uploaded";
+"ESSFlickrWaitingForFlickrToProcessVideo" = "Waiting for Flickr to process the upload...";
+"ESSFlickrUploadFailed" = "Publishing to Flickr has failed. The file probably couldn't be converted.";
+"ESSFlickrUploadSucceeded" = "Publishing to Flickr was successful.";
+"ESSFlickrDefaultTitle" = "Movie";
+"ESSFlickrUnknownUsername" = "Unknown Username";
+
+/*
+VIMEO
+*/
+
+"ESSVimeoInitializingUpload" = "Initializing Upload...";
+"ESSVimeoNoSpaceLeft" = "There is no space left in the account you have logged in to for the movie to be uploaded.";
+"ESSVimeoNoPlusAccount" = "This application can only upload to Vimeo PLUS accounts.";
+"ESSVimeoUploadPercentageDone" = "%ld%% uploaded";
+"ESSVimeoWaitingForVimeoToVerifyVideo" = "Verifying Upload...";
+"ESSVimeoUploadFailed" = "Your movie could not be published to Vimeo.";
+"ESSVimeoUploadSucceeded" = "Your movie was successfully published to Vimeo.";
+"ESSVimeoUnknownUsername" = "Unknown Username";
+"ESSVimeoDefaultTitle" = "Movie";
