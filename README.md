@@ -232,5 +232,9 @@ And start the upload session like so:
 This code works on OS X Lion and later.  
 Developed with Xcode 4.2.1  
 
+## External Frameworks / Source Code used
+
+OAuthConsumer framework (http://code.google.com/p/oauthconsumer/ , made available under the MIT License)
+
 ## Support
 The framework and code is provided as-is, but if you need help or have suggestions, you can contact me anytime at [opensource@eternalstorms.at](mailto:opensource@eternalstorms.at)
