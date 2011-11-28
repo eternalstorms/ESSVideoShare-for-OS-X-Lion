@@ -193,6 +193,41 @@ And start the upload session like so:
     NSURL *urlToVideoOnHardDisk = [NSURL fileURLWithPath:@"/path/to/the/video.mp4"];
     [flickr uploadVideoAtURL:urlToVideoOnHardDisk];
 
+# ESSVideoShare in Action
+
+## ESSYouTube
+
+![Login](http://www.eternalstorms.at/opensource/ESSVideoShare/youtube/1.png "Login")  
+![Meta Data](http://www.eternalstorms.at/opensource/ESSVideoShare/youtube/2.png "Movie meta data")  
+![Terms of Use](http://www.eternalstorms.at/opensource/ESSVideoShare/youtube/3.png "Terms of Use")  
+![Upload Progress](http://www.eternalstorms.at/opensource/ESSVideoShare/youtube/4.png "Upload progress")  
+![Waiting For Processing](http://www.eternalstorms.at/opensource/ESSVideoShare/youtube/5.png "Waiting for Processing")  
+![Done](http://www.eternalstorms.at/opensource/ESSVideoShare/youtube/6.png "Done")  
+
+## ESSVimeo
+
+![Login](http://www.eternalstorms.at/opensource/ESSVideoShare/vimeo/1.png "Login")  
+![Meta Data](http://www.eternalstorms.at/opensource/ESSVideoShare/vimeo/2.png "Movie meta data")  
+![Terms of Use](http://www.eternalstorms.at/opensource/ESSVideoShare/vimeo/3.png "Terms of Use")  
+![Upload Progress](http://www.eternalstorms.at/opensource/ESSVideoShare/vimeo/4.png "Upload progress")  
+![Done](http://www.eternalstorms.at/opensource/ESSVideoShare/vimeo/5.png "Done")  
+
+## ESSFacebook
+
+![Login](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/1.png "Login")  
+![Confirm Login](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/2.png "Confirm Login")  
+![Movie Metadata](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/3.png "Movie metadata")  
+![Upload Progress](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/4.png "Upload progress")  
+![Done](http://www.eternalstorms.at/opensource/ESSVideoShare/facebook/5.png "Done")  
+
+## ESSFlickr
+
+![Login](http://www.eternalstorms.at/opensource/ESSVideoShare/flickr/1.png "Login")  
+![Movie metadata](http://www.eternalstorms.at/opensource/ESSVideoShare/flickr/2.png "Movie metadata")  
+![Upload Progress](http://www.eternalstorms.at/opensource/ESSVideoShare/flickr/3.png "Movie metadata")  
+![Waiting for Processing](http://www.eternalstorms.at/opensource/ESSVideoShare/flickr/4.png "Waiting for Processing")  
+![Done](http://www.eternalstorms.at/opensource/ESSVideoShare/flickr/5.png "Done")
+
 ## Requirements
 This code works on OS X Lion and later.
 
