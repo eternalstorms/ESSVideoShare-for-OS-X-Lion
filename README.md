@@ -244,3 +244,6 @@ OAuthConsumer framework (http://code.google.com/p/oauthconsumer/ , made availabl
 The framework and code is provided as-is, but if you need help or have suggestions, you can contact me anytime at [opensource@eternalstorms.at](mailto:opensource@eternalstorms.at) or [@eternalstorms on twitter](http://twitter.com/eternalstorms)
 
 For other Open Source projects of mine, please visit http://www.eternalstorms.at/opensource
+
+# I want to hear from you
+If you use ESSVideoShare in one of your projects, please [let me know](mailto:opensource@eternalstorms.at)! I'd love to hear about your apps!
