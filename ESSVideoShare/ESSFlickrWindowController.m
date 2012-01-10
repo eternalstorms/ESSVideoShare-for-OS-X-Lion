@@ -108,9 +108,9 @@
 - (IBAction)cancel:(id)sender
 {
 	[sender setEnabled:NO];
-	if (self.window.parentWindow != nil)
-		[NSApp endSheet:self.window];
 	[self.window orderOut:nil];
+	//if (self.window.parentWindow != nil)
+		[NSApp endSheet:self.window];
 	
 	double delayInSeconds = 0.55;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);

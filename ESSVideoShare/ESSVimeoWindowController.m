@@ -201,9 +201,9 @@
 {
 	[sender setEnabled:NO];
 	
-	if (self.window.parentWindow != nil)
-		[NSApp endSheet:self.window];
 	[self.window orderOut:nil];
+	//if (self.window.parentWindow != nil)
+		[NSApp endSheet:self.window];
 	
 	if ([self.delegate respondsToSelector:@selector(vimeoWindowIsFinished:)])
 	{

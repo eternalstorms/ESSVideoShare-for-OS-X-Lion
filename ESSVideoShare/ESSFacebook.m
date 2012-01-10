@@ -145,18 +145,18 @@
 		[self._uploader cancel];
 		self._uploader = nil;
 		
-		if (login.window.parentWindow != nil)
-			[NSApp endSheet:login.window];
 		[login.window orderOut:nil];
+		//if (login.window.parentWindow != nil)
+			[NSApp endSheet:login.window];
 		
 		return;
 	}
 	
 	if (token == nil)
 	{	
-		if (login.window.parentWindow != nil)
-			[NSApp endSheet:login.window];
 		[login.window orderOut:nil];
+		//if (login.window.parentWindow != nil)
+			[NSApp endSheet:login.window];
 		
 		return;
 	}
