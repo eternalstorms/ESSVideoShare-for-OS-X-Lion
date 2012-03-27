@@ -259,10 +259,24 @@
 	
 	NSRange userNameRange = [retStr rangeOfString:@":user:"];
 	if (userNameRange.location == NSNotFound)
+		userNameRange = [retStr rangeOfString:@":username"];
+	if (userNameRange.location == NSNotFound)
 		return nil;
 	
-	NSString *username = [retStr substringFromIndex:userNameRange.location+userNameRange.length];
-	username = [username substringToIndex:[username rangeOfString:@"</"].location];
+	//changes by Jean-Pierre Rizzi
+	NSString *username = nil;
+	if (userNameRange.length <= 6) //:user:
+	{
+		username = [retStr substringFromIndex:userNameRange.location+userNameRange.length];
+		username = [username substringToIndex:[username rangeOfString:@"</"].location];
+	} else //:username:
+	{
+		NSString *usernameSubStr = [retStr substringFromIndex:userNameRange.location+userNameRange.length];
+		userNameRange = [usernameSubStr rangeOfString:@"'>"];
+		
+		NSString *username = [usernameSubStr substringFromIndex:userNameRange.location+userNameRange.length];
+		username = [username substringToIndex:[username rangeOfString:@"</"].location];
+	}
 	
 	return username;
 }

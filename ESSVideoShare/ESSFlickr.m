@@ -182,6 +182,8 @@
 					{
 						self._requestToken = [[[OAToken alloc] initWithHTTPResponseBody:result] autorelease];
 						
+						//bug fix by Jean-Pierre Rizzi (added another retain to avoid crash later on)
+						[result retain];
 						dispatch_async(dispatch_get_main_queue(), ^{
 							NSString *urlStr = [NSString stringWithFormat:@"http://www.flickr.com/services/oauth/authorize?%@&perms=write",result];
 							NSURL *url = [NSURL URLWithString:urlStr];
