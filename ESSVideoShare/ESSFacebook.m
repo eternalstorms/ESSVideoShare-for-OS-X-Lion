@@ -10,7 +10,11 @@
 
 @implementation ESSFacebook
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @synthesize delegate,appID,appSecret,_accessToken,_uploader,_uploadedObjectID,_username,_fbWinCtr,_receivedData;
+#else
+@synthesize delegate,appID,appSecret,_accessToken,_uploader,_uploadedObjectID,_username,_fbViewCtr,_receivedData;
+#endif
 
 - (id)initWithDelegate:(id)del appID:(NSString *)anID appSecret:(NSString *)secret
 {
@@ -33,10 +37,22 @@
 - (void)uploadVideoAtURL:(NSURL *)videoURL
 {
 	if (self.appID == nil || ![[NSFileManager defaultManager] fileExistsAtPath:[videoURL path]])
+	{
+		NSLog(@"either no appID or video file doesn't exist");
 		return;
+	}
 	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._fbWinCtr = [[[ESSFacebookWindowController alloc] initWithDelegate:self appID:self.appID videoURL:videoURL] autorelease];
 	[self._fbWinCtr loadWindow];
+#else
+	//load iphone interface
+	self._fbViewCtr = [[[ESSFacebookiOSViewController alloc] initWithDelegate:self appID:self.appID videoURL:videoURL] autorelease]; //instantiates with login webview
+	[self._fbViewCtr loadView];
+	UINavigationController *navCtr = [[[UINavigationController alloc] initWithRootViewController:self._fbViewCtr] autorelease];
+	navCtr.modalPresentationStyle = UIModalPresentationFormSheet;
+	self._fbViewCtr.navContr = navCtr;
+#endif
 	
 	if (self._accessToken == nil)
 		[self _authorize]; //if we have no auth key saved from a previous session, this will take care of showing the login panel for us
@@ -79,27 +95,44 @@
 		}
 	}
 	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	NSWindow *baseWin = [NSApp mainWindow];
+	
 	if ([self.delegate respondsToSelector:@selector(ESSFacebookNeedsWindowToAttachTo:)])
 		baseWin = [self.delegate ESSFacebookNeedsWindowToAttachTo:self];
+#endif
 	
 	if (authDict != nil)
 	{
 		self._accessToken = [authDict objectForKey:@"token"];
 		self._username = [authDict objectForKey:@"name"];
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		self._fbWinCtr.usernameField.stringValue = self._username;
 		if (self._fbWinCtr.titleField.stringValue.length == 0)
 			self._fbWinCtr.titleField.stringValue = ESSLocalizedString(@"ESSFacebookDefaultTitle",nil);
 		
 		[self._fbWinCtr switchToUploadViewWithAnimation:NO];
+#else
+		//need to configure default title for iOS
+		[self._fbViewCtr updateUsername:self._username];
+		if (self._fbViewCtr.videoTitle.length == 0)
+			[self._fbViewCtr updateVideoTitle:ESSLocalizedString(@"ESSFacebookDefaultTitle",nil)];
+		[self._fbViewCtr switchToUploadViewWithAnimation:NO];
+#endif
 	} else //need to show webview
 	{
 		self._accessToken = nil;
 		self._username = nil;
 		
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._fbWinCtr switchToLoginViewWithAnimation:NO];
+#else
+		//iOS
+		[self._fbViewCtr switchToLoginViewWithAnimation:NO];
+#endif
 	}
 	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	if (baseWin != nil)
 		[NSApp beginSheet:self._fbWinCtr.window modalForWindow:baseWin modalDelegate:self didEndSelector:@selector(facebookWin:didEndWithCode:context:) contextInfo:nil];
 	else
@@ -107,8 +140,17 @@
 		[self._fbWinCtr.window center];
 		[self._fbWinCtr.window makeKeyAndOrderFront:nil];
 	}
+#else
+	//iOS
+	UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+	if ([self.delegate respondsToSelector:@selector(ESSFacebookNeedsCurrentViewControllerToAttachTo:)])
+		currVCtr = [self.delegate ESSFacebookNeedsCurrentViewControllerToAttachTo:self];
+	
+	[currVCtr presentViewController:self._fbViewCtr.navContr animated:YES completion:nil];
+#endif
 }
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (void)facebookWin:(NSWindow *)window didEndWithCode:(NSUInteger)code context:(id)ctx
 {
 	double delayInSeconds = 0.55;
@@ -118,6 +160,7 @@
 			[self.delegate ESSFacebookDidFinish:self];
 	});
 }
+#endif
 
 - (void)_deauthorize
 {
@@ -136,6 +179,7 @@
 	self._accessToken = nil;
 }
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (void)facebookLogin:(ESSFacebookWindowController *)login
   returnedAccessToken:(NSString *)token
 	   expirationDate:(NSDate *)expDate
@@ -147,7 +191,7 @@
 		
 		[login.window orderOut:nil];
 		//if (login.window.parentWindow != nil)
-			[NSApp endSheet:login.window];
+		[NSApp endSheet:login.window];
 		
 		return;
 	}
@@ -156,7 +200,7 @@
 	{	
 		[login.window orderOut:nil];
 		//if (login.window.parentWindow != nil)
-			[NSApp endSheet:login.window];
+		[NSApp endSheet:login.window];
 		
 		return;
 	}
@@ -203,18 +247,101 @@
 	} else
 		[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"essfacebookauth"];
 }
+#else
+- (void)facebookLogin:(ESSFacebookiOSViewController *)login returnedAccessToken:(NSString *)token expirationDate:(NSDate *)expDate
+{
+	if (self._uploader != nil)
+	{
+		[self._uploader cancel];
+		self._uploader = nil;
+		
+		UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+		if ([self.delegate respondsToSelector:@selector(ESSFacebookNeedsCurrentViewControllerToAttachTo:)])
+			currVCtr = [self.delegate ESSFacebookNeedsCurrentViewControllerToAttachTo:self];
+		
+		[currVCtr dismissViewControllerAnimated:YES completion:^{
+			if ([self.delegate respondsToSelector:@selector(ESSFacebookDidFinish:)])
+				[self.delegate ESSFacebookDidFinish:self];
+		}];
+		
+		return;
+	}
+	
+	if (token == nil)
+	{		
+		UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+		if ([self.delegate respondsToSelector:@selector(ESSFacebookNeedsCurrentViewControllerToAttachTo:)])
+			currVCtr = [self.delegate ESSFacebookNeedsCurrentViewControllerToAttachTo:self];
+		
+		[currVCtr dismissViewControllerAnimated:YES completion:^{
+			if ([self.delegate respondsToSelector:@selector(ESSFacebookDidFinish:)])
+				[self.delegate ESSFacebookDidFinish:self];
+		}];
+		
+		return;
+	}
+	
+	[token retain];
+	self._accessToken = token;
+	//retrieve name for current user
+	NSURL *nameURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/me?access_token=%@",self._accessToken]];
+	NSData *retData = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:nameURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0] returningResponse:nil error:nil];
+	NSString *name = nil;
+	if (retData != nil)
+	{
+		NSString *retStr = [[NSString alloc] initWithData:retData encoding:NSUTF8StringEncoding];
+		
+		NSRange nameRange = [retStr rangeOfString:@"\"name\":\""];
+		if (nameRange.location == NSNotFound)
+			nameRange = [retStr rangeOfString:@"\"name\": \""];
+		if (nameRange.location != NSNotFound)
+		{
+			name = [retStr substringFromIndex:nameRange.location+nameRange.length];
+			name = [name substringToIndex:[name rangeOfString:@"\""].location];
+		}
+		[retStr release];
+	}
+	self._username = name;
+	
+	if (self._username != nil)
+		[login updateUsername:self._username];
+	else
+		[login updateUsername:ESSLocalizedString(@"ESSFacebookUnknownUsername",nil)];
+	[login updateVideoTitle:ESSLocalizedString(@"ESSFacebookDefaultTitle", nil)];
+	[login switchToUploadViewWithAnimation:YES];
+	
+	[token release];
+	
+	if (self._accessToken != nil)
+	{
+		NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+		[dict setObject:self._accessToken forKey:@"token"];
+		[dict setObject:expDate forKey:@"expirationDate"];
+		if (name)
+			[dict setObject:name forKey:@"name"];
+		[[NSUserDefaults standardUserDefaults] setObject:dict
+												  forKey:@"essfacebookauth"];
+	} else
+		[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"essfacebookauth"];
+}
+#endif
 
 - (void)_uploadVideoAtURL:(NSURL *)videoURL
-				   title:(NSString *)title
-			 description:(NSString *)description
-			   isPrivate:(BOOL)isPrivate
+					title:(NSString *)title
+			  description:(NSString *)description
+				isPrivate:(BOOL)isPrivate
 {
 	if (videoURL == nil || self._accessToken == nil || ![[NSFileManager defaultManager] fileExistsAtPath:[videoURL path]] || self._uploader != nil)
 	{
 		double delayInSeconds = 1.0;
 		dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 		dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._fbWinCtr uploadFinishedWithFacebookVideoURL:nil];
+#else
+			//iOS
+			[self._fbViewCtr uploadFinishedWithFacebookVideoURL:nil];
+#endif
 		});
 		return;
 	}
@@ -319,24 +446,44 @@
 	if (self._uploadedObjectID == nil)
 	{
 		//error uploading
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._fbWinCtr uploadFinishedWithFacebookVideoURL:nil];
+#else
+		//iOS
+		[self._fbViewCtr uploadFinishedWithFacebookVideoURL:nil];
+#endif
 	} else
 	{
 		NSString *urlStr = [NSString stringWithFormat:@"https://www.facebook.com/video/video.php?v=%@",self._uploadedObjectID];
 		NSURL *url = [NSURL URLWithString:urlStr];
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._fbWinCtr uploadFinishedWithFacebookVideoURL:url];
+#else
+		//iOS, use url
+		[self._fbViewCtr uploadFinishedWithFacebookVideoURL:url];
+#endif
 	}
 	self._uploadedObjectID = nil;
 }
 
 - (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	[self._fbWinCtr uploadUpdatedWithBytes:totalBytesWritten ofTotalBytes:totalBytesExpectedToWrite];
+#else
+	//iOS
+	[self._fbViewCtr uploadUpdatedWithBytes:totalBytesWritten ofTotalBytes:totalBytesExpectedToWrite];
+#endif
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	[self._fbWinCtr uploadFinishedWithFacebookVideoURL:nil];
+#else
+	//iOS
+	[self._fbViewCtr uploadFinishedWithFacebookVideoURL:nil];
+#endif
 }
 
 - (void)dealloc
@@ -347,7 +494,12 @@
 	self._accessToken = nil;
 	self._uploader = nil;
 	self._uploadedObjectID = nil;
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._fbWinCtr = nil;
+#else
+	//iOS
+	self._fbViewCtr = nil;
+#endif
 	self._receivedData = nil;
 	
 	[super dealloc];

@@ -155,6 +155,10 @@
 		393EC2E914828EE300F7074A /* OAuthConsumer_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumer_Prefix.pch; sourceTree = "<group>"; };
 		393EC2EA14828EE300F7074A /* OAuthConsumer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OAuthConsumer.h; sourceTree = "<group>"; };
 		393EC31D148290DD00F7074A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = ../../../../../../../../System/Library/Frameworks/Security.framework; sourceTree = "<group>"; };
+		39BA60C71521F1FE00521CE5 /* ESSFacebookiOSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESSFacebookiOSViewController.h; sourceTree = "<group>"; };
+		39BA60C81521F1FE00521CE5 /* ESSFacebookiOSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ESSFacebookiOSViewController.m; sourceTree = "<group>"; };
+		39BA60C91521F1FE00521CE5 /* ESSFacebookiOSLoginView_iPhone.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ESSFacebookiOSLoginView_iPhone.xib; sourceTree = "<group>"; };
+		39BA60CA1521F1FE00521CE5 /* ESSFacebookiOSLoginView_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ESSFacebookiOSLoginView_iPad.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -214,7 +218,7 @@
 		393EC2231482702000F7074A /* ESSVideoShare */ = {
 			isa = PBXGroup;
 			children = (
-				393EC2B414828EC400F7074A /* OAuth */,
+				3956573F151E1733001BC49B /* Both Mac / iOS */,
 				393EC22A1482702100F7074A /* ESSVideoShare.h */,
 				393EC2411482731000F7074A /* Facebook */,
 				393EC24C1482732B00F7074A /* YouTube */,
@@ -251,11 +255,9 @@
 		393EC2411482731000F7074A /* Facebook */ = {
 			isa = PBXGroup;
 			children = (
-				393EC2421482731900F7074A /* ESSFacebook.h */,
-				393EC2431482731900F7074A /* ESSFacebook.m */,
-				393EC2441482731900F7074A /* ESSFacebookWindowController.h */,
-				393EC2451482731900F7074A /* ESSFacebookWindowController.m */,
-				393EC2461482731900F7074A /* ESSFacebookWindow.xib */,
+				39565706151C7C0F001BC49B /* Both Mac / iOS */,
+				39565708151C7C1C001BC49B /* Mac */,
+				39565709151C7C2D001BC49B /* iOS */,
 			);
 			name = Facebook;
 			sourceTree = "<group>";
@@ -263,11 +265,9 @@
 		393EC24C1482732B00F7074A /* YouTube */ = {
 			isa = PBXGroup;
 			children = (
-				393EC24D1482733800F7074A /* ESSYouTube.h */,
-				393EC24E1482733800F7074A /* ESSYouTube.m */,
-				393EC24F1482733800F7074A /* ESSYouTubeWindowController.h */,
-				393EC2501482733800F7074A /* ESSYouTubeWindowController.m */,
-				393EC2511482733800F7074A /* ESSYouTubeWindow.xib */,
+				3956570C151C7C50001BC49B /* Both Mac / iOS */,
+				3956570B151C7C4B001BC49B /* Mac */,
+				3956570A151C7C46001BC49B /* iOS */,
 			);
 			name = YouTube;
 			sourceTree = "<group>";
@@ -275,11 +275,9 @@
 		393EC2571482733F00F7074A /* Vimeo */ = {
 			isa = PBXGroup;
 			children = (
-				393EC2581482735400F7074A /* ESSVimeo.h */,
-				393EC2591482735400F7074A /* ESSVimeo.m */,
-				393EC25A1482735400F7074A /* ESSVimeoWindowController.h */,
-				393EC25B1482735400F7074A /* ESSVimeoWindowController.m */,
-				393EC25C1482735400F7074A /* essvimeoWindow.xib */,
+				3956570F151C7D06001BC49B /* Both Mac / iOS */,
+				3956570E151C7D01001BC49B /* Mac */,
+				3956570D151C7CFD001BC49B /* iOS */,
 			);
 			name = Vimeo;
 			sourceTree = "<group>";
@@ -287,11 +285,9 @@
 		393EC2621482735C00F7074A /* Flickr */ = {
 			isa = PBXGroup;
 			children = (
-				393EC2631482737600F7074A /* ESSFlickr.h */,
-				393EC2641482737600F7074A /* ESSFlickr.m */,
-				393EC2651482737600F7074A /* ESSFlickrWindowController.h */,
-				393EC2661482737600F7074A /* ESSFlickrWindowController.m */,
-				393EC2671482737600F7074A /* ESSFlickrWindow.xib */,
+				39565712151C7D30001BC49B /* Both Mac / iOS */,
+				39565711151C7D2A001BC49B /* Mac */,
+				39565710151C7D25001BC49B /* iOS */,
 			);
 			name = Flickr;
 			sourceTree = "<group>";
@@ -333,6 +329,122 @@
 				393EC2EA14828EE300F7074A /* OAuthConsumer.h */,
 			);
 			name = OAuth;
+			sourceTree = "<group>";
+		};
+		39565706151C7C0F001BC49B /* Both Mac / iOS */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2421482731900F7074A /* ESSFacebook.h */,
+				393EC2431482731900F7074A /* ESSFacebook.m */,
+			);
+			name = "Both Mac / iOS";
+			sourceTree = "<group>";
+		};
+		39565708151C7C1C001BC49B /* Mac */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2441482731900F7074A /* ESSFacebookWindowController.h */,
+				393EC2451482731900F7074A /* ESSFacebookWindowController.m */,
+				393EC2461482731900F7074A /* ESSFacebookWindow.xib */,
+			);
+			name = Mac;
+			sourceTree = "<group>";
+		};
+		39565709151C7C2D001BC49B /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				39BA60C71521F1FE00521CE5 /* ESSFacebookiOSViewController.h */,
+				39BA60C81521F1FE00521CE5 /* ESSFacebookiOSViewController.m */,
+				39BA60C91521F1FE00521CE5 /* ESSFacebookiOSLoginView_iPhone.xib */,
+				39BA60CA1521F1FE00521CE5 /* ESSFacebookiOSLoginView_iPad.xib */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		3956570A151C7C46001BC49B /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		3956570B151C7C4B001BC49B /* Mac */ = {
+			isa = PBXGroup;
+			children = (
+				393EC24F1482733800F7074A /* ESSYouTubeWindowController.h */,
+				393EC2501482733800F7074A /* ESSYouTubeWindowController.m */,
+				393EC2511482733800F7074A /* ESSYouTubeWindow.xib */,
+			);
+			name = Mac;
+			sourceTree = "<group>";
+		};
+		3956570C151C7C50001BC49B /* Both Mac / iOS */ = {
+			isa = PBXGroup;
+			children = (
+				393EC24D1482733800F7074A /* ESSYouTube.h */,
+				393EC24E1482733800F7074A /* ESSYouTube.m */,
+			);
+			name = "Both Mac / iOS";
+			sourceTree = "<group>";
+		};
+		3956570D151C7CFD001BC49B /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		3956570E151C7D01001BC49B /* Mac */ = {
+			isa = PBXGroup;
+			children = (
+				393EC25A1482735400F7074A /* ESSVimeoWindowController.h */,
+				393EC25B1482735400F7074A /* ESSVimeoWindowController.m */,
+				393EC25C1482735400F7074A /* essvimeoWindow.xib */,
+			);
+			name = Mac;
+			sourceTree = "<group>";
+		};
+		3956570F151C7D06001BC49B /* Both Mac / iOS */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2581482735400F7074A /* ESSVimeo.h */,
+				393EC2591482735400F7074A /* ESSVimeo.m */,
+			);
+			name = "Both Mac / iOS";
+			sourceTree = "<group>";
+		};
+		39565710151C7D25001BC49B /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		39565711151C7D2A001BC49B /* Mac */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2651482737600F7074A /* ESSFlickrWindowController.h */,
+				393EC2661482737600F7074A /* ESSFlickrWindowController.m */,
+				393EC2671482737600F7074A /* ESSFlickrWindow.xib */,
+			);
+			name = Mac;
+			sourceTree = "<group>";
+		};
+		39565712151C7D30001BC49B /* Both Mac / iOS */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2631482737600F7074A /* ESSFlickr.h */,
+				393EC2641482737600F7074A /* ESSFlickr.m */,
+			);
+			name = "Both Mac / iOS";
+			sourceTree = "<group>";
+		};
+		3956573F151E1733001BC49B /* Both Mac / iOS */ = {
+			isa = PBXGroup;
+			children = (
+				393EC2B414828EC400F7074A /* OAuth */,
+			);
+			name = "Both Mac / iOS";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -588,6 +700,7 @@
 				393EC2311482702100F7074A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
