@@ -50,7 +50,8 @@
 	self._fbViewCtr = [[[ESSFacebookiOSViewController alloc] initWithDelegate:self appID:self.appID videoURL:videoURL] autorelease]; //instantiates with login webview
 	[self._fbViewCtr loadView];
 	UINavigationController *navCtr = [[[UINavigationController alloc] initWithRootViewController:self._fbViewCtr] autorelease];
-	navCtr.modalPresentationStyle = UIModalPresentationFormSheet;
+	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+		navCtr.modalPresentationStyle = UIModalPresentationFormSheet;
 	self._fbViewCtr.navContr = navCtr;
 #endif
 	

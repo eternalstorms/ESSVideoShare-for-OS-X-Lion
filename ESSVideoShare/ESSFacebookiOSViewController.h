@@ -21,6 +21,10 @@
 
 @property (assign) id delegate;
 
+@property (retain) UITableViewCell *titleTVCell;
+@property (retain) UITableViewCell *descriptionTVCell;
+@property (retain) UITableViewCell *privacyTVCell;
+
 @property (retain) NSString *appID;
 @property (retain) NSURL *videoURL;
 
@@ -63,5 +67,7 @@
 - (void)uploadStarted;
 - (void)uploadUpdatedWithBytes:(NSInteger)bytesUploaded ofTotalBytes:(NSInteger)totalBytes;
 - (void)uploadFinishedWithFacebookVideoURL:(NSURL *)url;
+
+- (UITableViewCell *)customTVCellForIndexPath:(NSIndexPath *)indexPath;
 
 @end

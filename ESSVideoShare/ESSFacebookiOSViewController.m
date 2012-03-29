@@ -15,7 +15,7 @@
 
 @implementation ESSFacebookiOSViewController
 
-@synthesize delegate,navContr,infoTableViewController,uploadingViewController,uploadProgressBarView,percentDoneField,doneViewController,doneImageView,doneTextField,viewButton,appID,videoURL,username,videoTitle,temporaryCookies;
+@synthesize delegate,navContr,infoTableViewController,uploadingViewController,uploadProgressBarView,percentDoneField,doneViewController,doneImageView,doneTextField,viewButton,appID,videoURL,username,videoTitle,temporaryCookies,titleTVCell,descriptionTVCell,privacyTVCell;
 
 - (id)initWithDelegate:(id)del appID:(NSString *)someID videoURL:(NSURL *)url
 {
@@ -318,7 +318,7 @@
 	if (section == 0)
 		return ESSLocalizedString(@"Facebook User Info", nil);
 	else if (section == 1)
-		return ESSLocalizedString(@"Video Info", nil);
+		return ESSLocalizedString(@"VideoInfo", nil);
 	else if (section == 2)
 		return ESSLocalizedString(@"Privacy", nil);
 	
@@ -337,60 +337,84 @@
 	} else if ([indexPath indexAtPosition:0] == 1)
 	{
 		//video info
-		UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"videoInfoCell"];
-		cell.accessoryType = UITableViewCellAccessoryNone;
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		
-		UITextField *editableTextField = nil;
-		if ([[UIDevice currentDevice] userInterfaceIdiom] != UIUserInterfaceIdiomPad)
-			editableTextField = [[UITextField alloc] initWithFrame:CGRectMake(120,11,186,22)];
-		else
-			editableTextField = [[UITextField alloc] initWithFrame:CGRectMake(145,11,360,22)];
-		editableTextField.adjustsFontSizeToFitWidth = YES;
-		editableTextField.textColor = [UIColor colorWithRed:0.22 green:0.33 blue:0.53 alpha:1];
-		editableTextField.backgroundColor = cell.backgroundColor;
-		editableTextField.autocorrectionType = UITextAutocorrectionTypeDefault;
-		editableTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
-		editableTextField.textAlignment = UITextAlignmentLeft;
-		editableTextField.tag = 0;
-		editableTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-		editableTextField.enabled = YES;
-		editableTextField.keyboardType = UIKeyboardTypeDefault;
-		editableTextField.delegate = self;
-		[cell addSubview:editableTextField];
 		if ([indexPath indexAtPosition:1] == 0)
 		{
-			//title
-			editableTextField.returnKeyType = UIReturnKeyDone;
-			cell.textLabel.text = ESSLocalizedString(@"Title",nil);
-			editableTextField.placeholder = ESSLocalizedString(@"required", nil);
+			if (self.titleTVCell == nil)
+				self.titleTVCell = [self customTVCellForIndexPath:indexPath];
+			
+			return self.titleTVCell;
 		} else
 		{
-			//description
-			editableTextField.returnKeyType = UIReturnKeyDone;
-			cell.textLabel.text = ESSLocalizedString(@"Description",nil);
-			editableTextField.placeholder = ESSLocalizedString(@"optional", nil);
+			if (self.descriptionTVCell == nil)
+				self.descriptionTVCell = [self customTVCellForIndexPath:indexPath];
+			
+			return self.descriptionTVCell;
 		}
-		[editableTextField release];
-		return [cell autorelease];
 	} else if ([indexPath indexAtPosition:0] == 2)
 	{
 		//privacy
-		UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"privacyCell"];
-		cell.accessoryType = UITableViewCellAccessoryNone;
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
-		cell.textLabel.text = ESSLocalizedString(@"Private Video",nil);
+		if (self.privacyTVCell == nil)
+		{
+			self.privacyTVCell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"privacyCell"] autorelease];
+			self.privacyTVCell.accessoryType = UITableViewCellAccessoryNone;
+			self.privacyTVCell.selectionStyle = UITableViewCellSelectionStyleNone;
+			self.privacyTVCell.textLabel.text = ESSLocalizedString(@"Private Video",nil);
+			
+			UISwitch *aSwitch = nil;
+			if ([[UIDevice currentDevice] userInterfaceIdiom] != UIUserInterfaceIdiomPad)
+				aSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(222,10,186,20)];
+			else //iPad
+				aSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(420,10,186,20)];
+			aSwitch.on = YES;
+			
+			[self.privacyTVCell addSubview:aSwitch];
+			[aSwitch release];
+		}
 		
-		UISwitch *aSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(420,10,186,20)];
-		aSwitch.on = YES;
-		
-		[cell addSubview:aSwitch];
-		[aSwitch release];
-		
-		return [cell autorelease];
+		return self.privacyTVCell;
 	}
 	
 	return nil;
+}
+
+- (UITableViewCell *)customTVCellForIndexPath:(NSIndexPath *)indexPath
+{
+	UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"videoInfoCell"];
+	cell.accessoryType = UITableViewCellAccessoryNone;
+	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+	
+	UITextField *editableTextField = nil;
+	if ([[UIDevice currentDevice] userInterfaceIdiom] != UIUserInterfaceIdiomPad)
+		editableTextField = [[UITextField alloc] initWithFrame:CGRectMake(120,11,186,22)];
+	else
+		editableTextField = [[UITextField alloc] initWithFrame:CGRectMake(145,11,360,22)];
+	editableTextField.adjustsFontSizeToFitWidth = YES;
+	editableTextField.textColor = [UIColor colorWithRed:0.22 green:0.33 blue:0.53 alpha:1];
+	editableTextField.backgroundColor = cell.backgroundColor;
+	editableTextField.autocorrectionType = UITextAutocorrectionTypeDefault;
+	editableTextField.autocapitalizationType = UITextAutocapitalizationTypeSentences;
+	editableTextField.textAlignment = UITextAlignmentLeft;
+	editableTextField.tag = 0;
+	editableTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+	editableTextField.enabled = YES;
+	editableTextField.keyboardType = UIKeyboardTypeDefault;
+	editableTextField.delegate = self;
+	[cell addSubview:editableTextField];
+	if ([indexPath indexAtPosition:1] == 0)
+	{
+		//title
+		editableTextField.returnKeyType = UIReturnKeyDone;
+		cell.textLabel.text = ESSLocalizedString(@"Title",nil);
+		editableTextField.placeholder = ESSLocalizedString(@"required", nil);
+	} else
+	{
+		//description
+		editableTextField.returnKeyType = UIReturnKeyDone;
+		cell.textLabel.text = ESSLocalizedString(@"Description",nil);
+		editableTextField.placeholder = ESSLocalizedString(@"optional", nil);
+	}
+	[editableTextField release];
+	return [cell autorelease];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -434,7 +458,7 @@
 	self.uploadingViewController.navigationItem.leftBarButtonItem = button;
 	[button release];
 	self.uploadingViewController.navigationItem.rightBarButtonItem = nil;
-	self.uploadingViewController.navigationItem.title = ESSLocalizedString(@"Uploading...", nil);
+	self.uploadingViewController.navigationItem.title = ESSLocalizedString(@"PublishingToFacebook", nil);
 	self.uploadProgressBarView.progress = 0.0;
 }
 
@@ -450,9 +474,14 @@
 - (void)uploadFinishedWithFacebookVideoURL:(NSURL *)url
 {
 	if (url == nil)
+	{
 		self.doneTextField.text = ESSLocalizedString(@"FacebookErrorUpload", nil);
-	else
+		self.viewButton.hidden = YES;
+	} else
+	{
 		self.doneTextField.text = ESSLocalizedString(@"FacebookSuccessfulUpload", nil);
+		self.viewButton.hidden = NO;
+	}
 	
 	self.viewButton.enabled = YES;
 	[self.viewButton setTitle:url.absoluteString forState:UIControlStateDisabled]; //must never be disabled
@@ -481,6 +510,9 @@
 	self.infoTableViewController = nil;
 	self.uploadingViewController = nil;
 	self.doneViewController = nil;
+	self.titleTVCell = nil;
+	self.descriptionTVCell = nil;
+	self.privacyTVCell = nil;
 	
 	[super dealloc];
 }
