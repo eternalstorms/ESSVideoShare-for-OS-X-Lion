@@ -6,8 +6,13 @@
 //  Copyright (c) 2011 Eternal Storms Software. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 #import "ESSYouTubeWindowController.h"
+#else
+#import "ESSYouTubeiOSViewController.h"
+#endif
 
 #define ESSLocalizedString(key, comment) NSLocalizedStringFromTableInBundle((key),nil,[NSBundle bundleForClass:[self class]],(comment))
 
@@ -16,17 +21,29 @@
 @protocol ESSYouTubeDelegate <NSObject>
 
 @required
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (NSWindow *)ESSYouTubeNeedsWindowToAttachTo:(ESSYouTube *)youtube;
+#else
+- (UIViewController *)ESSYouTubeNeedsCurrentViewControllerToAttachTo:(ESSYouTube *)youtube;
+#endif
 - (void)ESSYouTubeDidFinish:(ESSYouTube *)youtube;
 
 @end
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @interface ESSYouTube : NSObject <NSURLConnectionDelegate,ESSYouTubeWindowControllerDelegate>
+#else
+@interface ESSYouTube : NSObject <NSURLConnectionDelegate,ESSYouTubeiOSViewControllerDelegate>
+#endif
 
 @property (assign) id delegate;
 @property (retain) NSString *developerKey;
 @property (retain) NSString *_authToken;
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @property (retain) ESSYouTubeWindowController *_ytWinCtr;
+#else
+@property (retain) ESSYouTubeiOSViewController *_ytViewCtr;
+#endif
 @property (retain) NSURLConnection *_uploader;
 @property (retain) NSMutableData *_receivedData;
 
@@ -46,11 +63,11 @@
 - (NSString *)_nameForLoggedInUser;
 
 - (void)_uploadVideoAtURL:(NSURL *)url
-			   withTitle:(NSString *)title
-			 description:(NSString *)description
-			 makePrivate:(BOOL)makePrivate
-				keywords:(NSString *)keywords
-				category:(NSString *)category;
+				withTitle:(NSString *)title
+			  description:(NSString *)description
+			  makePrivate:(BOOL)makePrivate
+				 keywords:(NSString *)keywords
+				 category:(NSString *)category;
 
 - (BOOL)_videoUploadWithID:(NSString *)videoID
 	   isFinishedWithError:(BOOL *)uploadFailed;

@@ -17,6 +17,27 @@
 "ESSFacebookUploadSucceeded" = "Publishing to Facebook was successful.";
 "ESSFacebookUploadFailed" = "Publishing to Facebook has failed.";
 
+//iOS
+"Cancel" = "Cancel";
+"Login to Facebook" = "Facebook Login";
+"Upload" = "Upload";
+"Video Info" = "Information";
+"Press to log in to a different Facebook account" = "Tap to log in to a different Facebook account";
+"Private videos can only be viewed from your account" = "Private videos can only be viewed from your account":
+"Title" = "Title";
+"required" = "required";
+"Description" = "Description";
+"Private Video" = "Private Video";
+"Facebook User Info" = "Facebook User";
+"VideoInfo" = "Video Info";
+"Privacy" = "Privacy";
+"Facebook Username" = "Username";
+"PublishingToFacebook" = "Publishing...";
+"FacebookErrorUpload" = "The video could not be published to Facebook.";
+"FacebookSuccessfulUpload" = "The video was successfully published to Facebook.";
+"UploadDone" = "Upload finished";
+"Done" = "Done";
+
 /*
 YOUTUBE
 */
@@ -28,11 +49,32 @@ YOUTUBE
 "ESSYouTubeDefaultTitle" = "Movie";
 "ESSYouTubeInitializingUpload" = "Initializing Upload...";
 
+"ESSYouTubeiOSLoginTableViewFooter" = "";
+"ESSYouTubeiOSAccountInfoTableViewFooter" = "Tap to sign in to a different YouTube account";
+"ESSYouTubeiOSVideoInfoTableViewFooter" = "Separate multiple tags with commas. Each tag must contain at least two characters";
+"ESSYouTubeiOSPrivacyTableViewFooter" = "Private movies can only be viewed from your account and other YouTube accounts that you authorize";
+"ESSYouTubeiOSLoginTableViewHeader" = "Login to your YouTube account";
+"ESSYouTubeiOSAccountInfoTableViewHeader" = "YouTube Account";
+"ESSYouTubeiOSVideoInfoTableViewHeader" = "Video Info";
+"ESSYouTubeiOSPrivacyTableViewHeader" = "Privacy";
+"ESSYouTubeiOSUsernameCellTitle" = "Username";
+"ESSYouTubeiOSPasswordCellTitle" = "Password";
+"ESSYouTubeiOSLoginButtonTitle" = "Login";
+"ESSYouTubeiOSCancelButtonTitle" = "Cancel";
+"ESSYouTubeiOSUploadButtonTitle" = "Upload";
+"ESSYouTubeiOSDoneButtonTitle" = "Done";
+"ESSYouTubeiOSTitleCellTitle" = "Title";
+"ESSYouTubeiOSDescriptionCellTitle" = "Description";
+"ESSYouTubeiOSTagsCellTitle" = "Tags";
+"ESSYouTubeiOSCategoryCellTitle" = "Category";
+"ESSYouTubeiOSPrivateCellTitle" = "Private Video";
+"ESSYouTubeiOSSelectCategoryButton" = "Select Category";
+
 /*
 FLICKR
 */
 
-"ESSFlickrMovieTooLongTitle" = "Your movie couldn't be published to Flickr because it is longe than 90 seconds.";
+"ESSFlickrMovieTooLongTitle" = "Your movie couldn't be published to Flickr because it is longer than 90 seconds.";
 "ESSFlickrOKButton" = "OK";
 "ESSFlickrMovieTooLongMessage" = "You can save the movie to your hard disk, open it with QuickTime Player X, trim it there and then try uploading it again.";
 "ESSFlickrInitializingUpload" = "Initializing Upload...";

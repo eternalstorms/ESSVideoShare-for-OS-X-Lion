@@ -7,10 +7,176 @@
 //
 
 #import "ESSYouTube.h"
+#import <CoreFoundation/CoreFoundation.h>
 
 @implementation ESSYouTube
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @synthesize delegate,_ytWinCtr,developerKey,_authToken,_uploader,_receivedData;
+#else
+@synthesize delegate,_ytViewCtr,developerKey,_authToken,_uploader,_receivedData;
+
+/*
+ the following two functions are taken directly from http://opensource.apple.com/source/CF/CF-635/CFXMLParser.c since it's not available on iOS for a reason unknown to me
+ */
+
+CFStringRef CFXMLCreateStringByEscapingEntities(CFAllocatorRef allocator, CFStringRef string, CFDictionaryRef entitiesDictionary) {
+	CFMutableStringRef newString = CFStringCreateMutable(allocator, 0); // unbounded mutable string
+	CFMutableCharacterSetRef startChars = CFCharacterSetCreateMutable(allocator);
+	
+	CFStringInlineBuffer inlineBuf;
+	CFIndex idx = 0;
+	CFIndex mark = idx;
+	CFIndex stringLength = CFStringGetLength(string);
+	UniChar uc;
+	
+	CFCharacterSetAddCharactersInString(startChars, CFSTR("&<>'\""));
+	
+	CFStringInitInlineBuffer(string, &inlineBuf, CFRangeMake(0, stringLength));
+	for(idx = 0; idx < stringLength; idx++) {
+		uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, idx);
+		if(CFCharacterSetIsCharacterMember(startChars, uc)) {
+			CFStringRef previousSubstring = CFStringCreateWithSubstring(allocator, string, CFRangeMake(mark, idx - mark));
+			CFStringAppend(newString, previousSubstring);
+			CFRelease(previousSubstring);
+			switch(uc) {
+				case '&':
+					CFStringAppend(newString, CFSTR("&amp;"));
+					break;
+				case '<':
+					CFStringAppend(newString, CFSTR("&lt;"));
+					break;
+				case '>':
+					CFStringAppend(newString, CFSTR("&gt;"));
+					break;
+				case '\'':
+					CFStringAppend(newString, CFSTR("&apos;"));
+					break;
+				case '"':
+					CFStringAppend(newString, CFSTR("&quot;"));
+					break;
+			}
+			mark = idx + 1;
+		}
+	}
+	// Copy the remainder to the output string before returning.
+	CFStringRef remainder = CFStringCreateWithSubstring(allocator, string, CFRangeMake(mark, idx - mark));
+	if (NULL != remainder) {
+		CFStringAppend(newString, remainder);
+		CFRelease(remainder);
+	}
+	
+	CFRelease(startChars);
+	return newString;
+}
+
+CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFStringRef string, CFDictionaryRef entitiesDictionary) {
+	CFStringInlineBuffer inlineBuf; /* use this for fast traversal of the string in question */
+	CFStringRef sub;
+	CFIndex lastChunkStart, length = CFStringGetLength(string);
+	CFIndex i, entityStart;
+	UniChar uc;
+	UInt32 entity;
+	int base;
+	CFMutableDictionaryRef fullReplDict = entitiesDictionary ? CFDictionaryCreateMutableCopy(allocator, 0, entitiesDictionary) : CFDictionaryCreateMutable(allocator, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+	
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("amp"), (const void *)CFSTR("&"));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("quot"), (const void *)CFSTR("\""));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("lt"), (const void *)CFSTR("<"));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("gt"), (const void *)CFSTR(">"));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("apos"), (const void *)CFSTR("'"));
+	
+	CFStringInitInlineBuffer(string, &inlineBuf, CFRangeMake(0, length - 1));
+	CFMutableStringRef newString = CFStringCreateMutable(allocator, 0);
+	
+	lastChunkStart = 0;
+	// Scan through the string in its entirety
+	for(i = 0; i < length; ) {
+		uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;	// grab the next character and move i.
+		
+		if(uc == '&') {
+			entityStart = i - 1;
+			entity = 0xFFFF;	// set this to a not-Unicode character as sentinel
+			// we've hit the beginning of an entity. Copy everything from lastChunkStart to this point.
+			if(lastChunkStart < i - 1) {
+				sub = CFStringCreateWithSubstring(allocator, string, CFRangeMake(lastChunkStart, (i - 1) - lastChunkStart));
+				CFStringAppend(newString, sub);
+				CFRelease(sub);
+			}
+			
+			uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;	// grab the next character and move i.
+			// Now we can process the entity reference itself
+			if(uc == '#') {	// this is a numeric entity.
+				base = 10;
+				entity = 0;
+				uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+				
+				if(uc == 'x') {	// only lowercase x allowed. Translating numeric entity as hexadecimal.
+					base = 16;
+					uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+				}
+				
+				// process the provided digits 'til we're finished
+				while(true) {
+					if (uc >= '0' && uc <= '9')
+						entity = entity * base + (uc-'0');
+					else if (uc >= 'a' && uc <= 'f' && base == 16)
+						entity = entity * base + (uc-'a'+10);
+					else if (uc >= 'A' && uc <= 'F' && base == 16)
+						entity = entity * base + (uc-'A'+10);
+					else break;
+					
+					if (i < length) {
+						uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+					}
+					else
+						break;
+				}
+			}
+			
+			// Scan to the end of the entity
+			while(uc != ';' && i < length) {
+				uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+			}
+			
+			if(0xFFFF != entity) { // it was numeric, and translated.
+				// Now, output the result fo the entity
+				if(entity >= 0x10000) {
+					UniChar characters[2] = { ((entity - 0x10000) >> 10) + 0xD800, ((entity - 0x10000) & 0x3ff) + 0xDC00 };
+					CFStringAppendCharacters(newString, characters, 2);
+				} else {
+					UniChar character = entity;
+					CFStringAppendCharacters(newString, &character, 1);
+				}
+			} else {	// it wasn't numeric.
+				sub = CFStringCreateWithSubstring(allocator, string, CFRangeMake(entityStart + 1, (i - entityStart - 2))); // This trims off the & and ; from the string, so we can use it against the dictionary itself.
+				CFStringRef replacementString = (CFStringRef)CFDictionaryGetValue(fullReplDict, sub);
+				if(replacementString) {
+					CFStringAppend(newString, replacementString);
+				} else {
+					CFRelease(sub); // let the old substring go, since we didn't find it in the dictionary
+					sub =  CFStringCreateWithSubstring(allocator, string, CFRangeMake(entityStart, (i - entityStart))); // create a new one, including the & and ;
+					CFStringAppend(newString, sub); // ...and append that.
+				}
+				CFRelease(sub); // in either case, release the most-recent "sub"
+			}
+			
+			// move the lastChunkStart to the beginning of the next chunk.
+			lastChunkStart = i;
+		}
+	}
+	if(lastChunkStart < length) { // we've come out of the loop, let's get the rest of the string and tack it on.
+		sub = CFStringCreateWithSubstring(allocator, string, CFRangeMake(lastChunkStart, i - lastChunkStart));
+		CFStringAppend(newString, sub);
+		CFRelease(sub);
+	}
+	
+	CFRelease(fullReplDict);
+	
+	return newString;
+}
+
+#endif
 
 - (id)initWithDelegate:(id)del
 		  developerKey:(NSString *)key
@@ -31,9 +197,19 @@
 	if (self.developerKey == nil || ![[NSFileManager defaultManager] fileExistsAtPath:[url path]])
 		return;
 	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._ytWinCtr = [[[ESSYouTubeWindowController alloc] initWithDelegate:self videoURL:url] autorelease];
 	[self._ytWinCtr loadWindow];
 	[self._ytWinCtr.uploadNextButton setEnabled:NO];
+#else
+	//iOS
+	self._ytViewCtr = [[[ESSYouTubeiOSViewController alloc] initWithDelegate:self videoURL:url] autorelease];
+	[self._ytViewCtr loadView];
+	UINavigationController *navCtr = [[[UINavigationController alloc] initWithRootViewController:self._ytViewCtr] autorelease];
+	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+		navCtr.modalPresentationStyle = UIModalPresentationFormSheet;
+	self._ytViewCtr.navContr = navCtr;
+#endif
 	
 	[self _authorize];
 }
@@ -44,17 +220,27 @@
 	if (authDict == nil)
 	{
 		//start authorization
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._ytWinCtr switchToLoginWithAnimation:NO];
+#else
+		[self._ytViewCtr switchToLoginViewWithAnimation:NO];
+#endif
 	} else //got auth already
 	{
 		self._authToken = [authDict objectForKey:@"authToken"];
 		if (self._authToken == nil)
 		{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._ytWinCtr switchToLoginWithAnimation:NO];
+#else
+			//ios
+			[self._ytViewCtr switchToLoginViewWithAnimation:NO];
+#endif
 		} else
 		{
 			//check if valid
 			NSString *name = [self _nameForLoggedInUser]; //just used to check if the key we got is still valid
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			if (name == nil)
 			{
 				//not valid
@@ -73,9 +259,29 @@
 					});
 				});
 			}
+#else
+			//iOS
+			if (name == nil)
+			{
+				[self _deauthorize];
+				[self._ytViewCtr switchToLoginViewWithAnimation:NO];
+			} else
+			{
+				[self._ytViewCtr updateUsername:name];
+				[self._ytViewCtr switchToInfoViewWithAnimation:NO];
+				
+				dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+					__block NSDictionary *dict = [[self _categoriesDictionary] retain];
+					dispatch_async(dispatch_get_main_queue(), ^{
+						[self._ytViewCtr updateCategories:dict];
+						[dict release];
+					});
+				});
+			}
+#endif
 		}
 	}
-	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	NSWindow *win = [NSApp mainWindow];
 	if ([self.delegate respondsToSelector:@selector(ESSYouTubeNeedsWindowToAttachTo:)])
 		win = [self.delegate ESSYouTubeNeedsWindowToAttachTo:self];
@@ -87,6 +293,14 @@
 		[self._ytWinCtr.window center];
 		[self._ytWinCtr.window makeKeyAndOrderFront:nil];
 	}
+#else
+	//iOS
+	UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+	if ([self.delegate respondsToSelector:@selector(ESSYouTubeNeedsCurrentViewControllerToAttachTo:)])
+		currVCtr = [self.delegate ESSYouTubeNeedsCurrentViewControllerToAttachTo:self];
+	
+	[currVCtr presentViewController:self._ytViewCtr.navContr animated:YES completion:nil];
+#endif
 }
 
 - (void)_authorizeWithUsername:(NSString *)username password:(NSString *)password //does the actual authorization
@@ -110,6 +324,7 @@
 		if (retData != nil)
 			authToken = [[NSString alloc] initWithData:retData encoding:NSUTF8StringEncoding];
 		dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			if (authToken == nil)
 			{
 				//error, let our windowcontroller know
@@ -175,6 +390,56 @@
 			self._ytWinCtr.uploadUsernameField.stringValue = name;
 			[self._ytWinCtr switchToUploadWithAnimation:YES];
 			[self._ytWinCtr.signInButton setEnabled:YES];
+#else
+			//iOS
+			if (authToken == nil)
+			{
+				//error, let our windowcontroller know
+				[self._ytViewCtr resetLoginInfo];
+				return;
+			}
+			
+			if ([authToken rangeOfString:@"Error=" options:NSCaseInsensitiveSearch].location != NSNotFound)
+			{
+				//error, let windowcontroller know
+				[self._ytViewCtr resetLoginInfo];
+				
+				self._authToken = nil;
+				[authToken release];
+				return;
+			}
+			
+			self._authToken = authToken;
+			[authToken release];
+			
+			NSRange authRange = [self._authToken rangeOfString:@"Auth="];
+			if (authRange.location == NSNotFound)
+			{
+				//let windowcontr know something went wrong
+				[self._ytViewCtr resetLoginInfo];
+				
+				self._authToken = nil;
+				return;
+			}
+			
+			//NSString *name = [self nameForLoggedInUser];
+			NSString *name = _username;
+			if (name == nil)
+			{
+				//let windowcontroller know something went wrong
+				[self._ytViewCtr resetLoginInfo];
+				
+				self._authToken = nil;
+				return;
+			}
+			
+			[[NSUserDefaults standardUserDefaults] setObject:[NSDictionary dictionaryWithObjectsAndKeys:name,@"username",self._authToken,@"authToken", nil] forKey:@"essyoutubeauth"];
+			
+			NSDictionary *dict = [self _categoriesDictionary];
+			[self._ytViewCtr updateCategories:dict];
+			[self._ytViewCtr updateUsername:name];
+			[self._ytViewCtr switchToInfoViewWithAnimation:YES];
+#endif
 		});
 	});
 }
@@ -190,7 +455,7 @@
 	if (retData == nil)
 		return nil;
 	NSString *retStr = [[NSString alloc] initWithData:retData encoding:NSUTF8StringEncoding];
-
+	
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	NSRange range = [retStr rangeOfString:@"<atom:category term='"];
 	while (range.location != NSNotFound)
@@ -256,27 +521,15 @@
 		return nil;
 	
 	NSString *retStr = [[[NSString alloc] initWithData:retDat encoding:NSUTF8StringEncoding] autorelease];
-	
-	NSRange userNameRange = [retStr rangeOfString:@":user:"];
-	if (userNameRange.location == NSNotFound)
-		userNameRange = [retStr rangeOfString:@":username"];
+	NSRange userNameRange = [retStr rangeOfString:@"<yt:username "];
 	if (userNameRange.location == NSNotFound)
 		return nil;
 	
 	//changes by Jean-Pierre Rizzi
 	NSString *username = nil;
-	if (userNameRange.length <= 6) //:user:
-	{
-		username = [retStr substringFromIndex:userNameRange.location+userNameRange.length];
-		username = [username substringToIndex:[username rangeOfString:@"</"].location];
-	} else //:username:
-	{
-		NSString *usernameSubStr = [retStr substringFromIndex:userNameRange.location+userNameRange.length];
-		userNameRange = [usernameSubStr rangeOfString:@"'>"];
-		
-		NSString *username = [usernameSubStr substringFromIndex:userNameRange.location+userNameRange.length];
-		username = [username substringToIndex:[username rangeOfString:@"</"].location];
-	}
+	username = [retStr substringFromIndex:userNameRange.location+userNameRange.length];
+	username = [username substringFromIndex:[username rangeOfString:@">"].location+1];
+	username = [username substringToIndex:[username rangeOfString:@"</yt:username"].location];
 	
 	return username;
 }
@@ -286,6 +539,7 @@
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"essyoutubeauth"];
 }
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (void)youtubeWindowControllerDidDismiss:(ESSYouTubeWindowController *)ytWCtr
 {
 	[self._uploader cancel];
@@ -295,13 +549,30 @@
 	if ([self.delegate respondsToSelector:@selector(ESSYouTubeDidFinish:)])
 		[self.delegate performSelector:@selector(ESSYouTubeDidFinish:) withObject:self afterDelay:0.5];
 }
+#else
+- (void)youtubeiOSViewControllerDidDismiss:(ESSYouTubeiOSViewController *)ytViewCtr
+{
+	[self._uploader cancel];
+	self._uploader = nil;
+	self._ytViewCtr = nil;
+	
+	UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+	if ([self.delegate respondsToSelector:@selector(ESSYouTubeNeedsCurrentViewControllerToAttachTo:)])
+		currVCtr = [self.delegate ESSYouTubeNeedsCurrentViewControllerToAttachTo:self];
+	
+	[currVCtr dismissViewControllerAnimated:YES completion:^{
+		if ([self.delegate respondsToSelector:@selector(ESSYouTubeDidFinish:)])
+			[self.delegate ESSYouTubeDidFinish:self];
+	}];
+}
+#endif
 
 - (void)_uploadVideoAtURL:(NSURL *)url
-			   withTitle:(NSString *)title
-			 description:(NSString *)description
-			 makePrivate:(BOOL)makePrivate
-				keywords:(NSString *)keywords
-				category:(NSString *)category //category will be omitted and automatically set <yt:incomplete>, privacy is <yt:private/> and <yt:accessControl action='list' permission='denied'>
+				withTitle:(NSString *)title
+			  description:(NSString *)description
+			  makePrivate:(BOOL)makePrivate
+				 keywords:(NSString *)keywords
+				 category:(NSString *)category //category will be omitted and automatically set <yt:incomplete>, privacy is <yt:private/> and <yt:accessControl action='list' permission='denied'>
 {
 	if (self.developerKey == nil || self._authToken == nil || url == nil || title == nil || self._uploader != nil)
 		return;
@@ -389,6 +660,7 @@
 	[self._uploader cancel];
 	self._uploader = nil;
 	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	NSString *statusString = nil;
 	NSImage *image = nil;
 	statusString = ESSLocalizedString(@"ESSYouTubeUploadFailed", nil);
@@ -398,6 +670,10 @@
 	self._ytWinCtr.doneStatusField.stringValue = statusString;
 	
 	[self._ytWinCtr uploadFinishedWithYouTubeVideoURL:nil];
+#else
+	//iOS
+	[self._ytViewCtr uploadFinishedWithYouTubeVideoURL:nil];
+#endif
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -410,7 +686,12 @@
 
 - (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	[self._ytWinCtr uploadUpdatedWithUploadedBytes:totalBytesWritten ofTotalBytes:totalBytesExpectedToWrite];
+#else
+	//iOS
+	[self._ytViewCtr uploadUpdatedWithUploadedBytes:totalBytesWritten ofTotalBytes:totalBytesExpectedToWrite];
+#endif
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -421,6 +702,7 @@
 	NSRange URLRange = [resp rangeOfString:@":video:"];
 	if (URLRange.location == NSNotFound)
 	{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		NSString *statusString = nil;
 		NSImage *image = nil;
 		statusString = ESSLocalizedString(@"ESSYouTubeUploadFailed", nil);
@@ -430,6 +712,10 @@
 		self._ytWinCtr.doneStatusField.stringValue = statusString;
 		
 		[self._ytWinCtr uploadFinishedWithYouTubeVideoURL:nil];
+#else
+		//iOS
+		[self._ytViewCtr uploadFinishedWithYouTubeVideoURL:nil];
+#endif
 	} else
 	{
 		NSString *vidID = [resp substringFromIndex:URLRange.location + URLRange.length];
@@ -463,6 +749,7 @@
 		{
 			[vidID retain];
 			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				NSString *statusString = nil;
 				NSImage *image = nil;
 				if (failed)
@@ -483,6 +770,13 @@
 				self._ytWinCtr.doneStatusField.stringValue = statusString;
 				
 				[self._ytWinCtr uploadFinishedWithYouTubeVideoURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@",vidID]]];
+#else
+				//iOS
+				if (failed)
+					[self._ytViewCtr uploadFinishedWithYouTubeVideoURL:nil];
+				else
+					[self._ytViewCtr uploadFinishedWithYouTubeVideoURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@",vidID]]];
+#endif
 				
 				[vidID release];
 			});
@@ -548,7 +842,11 @@
 {
 	self.delegate = nil;
 	self._uploader = nil;
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._ytWinCtr = nil;
+#else
+	self._ytViewCtr = nil;
+#endif
 	self.developerKey = nil;
 	self._authToken = nil;
 	self._receivedData = nil;
