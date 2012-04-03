@@ -10,6 +10,7 @@
 
 @implementation OAToken (OAToken_KeychainExtensions)
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (id)initWithKeychainUsingAppName:(NSString *)name serviceProviderName:(NSString *)provider 
 {
     [super init];
@@ -89,5 +90,6 @@
                                                     );
 	return status;
 }
+#endif
 
 @end

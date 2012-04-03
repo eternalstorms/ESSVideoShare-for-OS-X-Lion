@@ -86,6 +86,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		391EB321152B645D0082058B /* ESSVimeoiOSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESSVimeoiOSViewController.h; sourceTree = "<group>"; };
+		391EB322152B645D0082058B /* ESSVimeoiOSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ESSVimeoiOSViewController.m; sourceTree = "<group>"; };
+		391EB323152B645D0082058B /* ESSVimeoiOSView_iPhone.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ESSVimeoiOSView_iPhone.xib; sourceTree = "<group>"; };
+		391EB324152B645D0082058B /* ESSVimeoiOSView_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ESSVimeoiOSView_iPad.xib; sourceTree = "<group>"; };
+		391EB325152B64930082058B /* ESSFlickriOSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ESSFlickriOSViewController.h; sourceTree = "<group>"; };
+		391EB326152B64930082058B /* ESSFlickriOSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ESSFlickriOSViewController.m; sourceTree = "<group>"; };
+		391EB327152B64930082058B /* ESSFlickriOSView_iPhone.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ESSFlickriOSView_iPhone.xib; sourceTree = "<group>"; };
+		391EB328152B64930082058B /* ESSFlickriOSView_iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ESSFlickriOSView_iPad.xib; sourceTree = "<group>"; };
 		393EC21A1482702000F7074A /* ESSVideoShare.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ESSVideoShare.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		393EC21D1482702000F7074A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		393EC2201482702000F7074A /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -398,6 +406,10 @@
 		3956570D151C7CFD001BC49B /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				391EB321152B645D0082058B /* ESSVimeoiOSViewController.h */,
+				391EB322152B645D0082058B /* ESSVimeoiOSViewController.m */,
+				391EB323152B645D0082058B /* ESSVimeoiOSView_iPhone.xib */,
+				391EB324152B645D0082058B /* ESSVimeoiOSView_iPad.xib */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -424,6 +436,10 @@
 		39565710151C7D25001BC49B /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				391EB325152B64930082058B /* ESSFlickriOSViewController.h */,
+				391EB326152B64930082058B /* ESSFlickriOSViewController.m */,
+				391EB327152B64930082058B /* ESSFlickriOSView_iPhone.xib */,
+				391EB328152B64930082058B /* ESSFlickriOSView_iPad.xib */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -527,7 +543,7 @@
 		393EC2101482702000F7074A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Eternal Storms Software";
 			};
 			buildConfigurationList = 393EC2131482702000F7074A /* Build configuration list for PBXProject "ESSVideoShare" */;

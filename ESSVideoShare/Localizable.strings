@@ -19,23 +19,23 @@
 
 //iOS
 "Cancel" = "Cancel";
-"Login to Facebook" = "Facebook Login";
+"Login to Facebook" = "Facebook";
 "Upload" = "Upload";
-"Video Info" = "Information";
+"Video Info" = "Facebook";
 "Press to log in to a different Facebook account" = "Tap to log in to a different Facebook account";
-"Private videos can only be viewed from your account" = "Private videos can only be viewed from your account":
+"Private videos can only be viewed from your account" = "Private videos can only be viewed from your account";
 "Title" = "Title";
 "required" = "required";
 "Description" = "Description";
 "Private Video" = "Private Video";
-"Facebook User Info" = "Facebook User";
+"Facebook User Info" = "Account Info";
 "VideoInfo" = "Video Info";
 "Privacy" = "Privacy";
 "Facebook Username" = "Username";
-"PublishingToFacebook" = "Publishing...";
+"PublishingToFacebook" = "Facebook";
 "FacebookErrorUpload" = "The video could not be published to Facebook.";
 "FacebookSuccessfulUpload" = "The video was successfully published to Facebook.";
-"UploadDone" = "Upload finished";
+"UploadDone" = "Facebook";
 "Done" = "Done";
 
 /*
@@ -50,11 +50,11 @@ YOUTUBE
 "ESSYouTubeInitializingUpload" = "Initializing Upload...";
 
 "ESSYouTubeiOSLoginTableViewFooter" = "";
-"ESSYouTubeiOSAccountInfoTableViewFooter" = "Tap to sign in to a different YouTube account";
+"ESSYouTubeiOSAccountInfoTableViewFooter" = "Tap to log in to a different YouTube account";
 "ESSYouTubeiOSVideoInfoTableViewFooter" = "Separate multiple tags with commas. Each tag must contain at least two characters";
 "ESSYouTubeiOSPrivacyTableViewFooter" = "Private movies can only be viewed from your account and other YouTube accounts that you authorize";
 "ESSYouTubeiOSLoginTableViewHeader" = "Login to your YouTube account";
-"ESSYouTubeiOSAccountInfoTableViewHeader" = "YouTube Account";
+"ESSYouTubeiOSAccountInfoTableViewHeader" = "Account Info";
 "ESSYouTubeiOSVideoInfoTableViewHeader" = "Video Info";
 "ESSYouTubeiOSPrivacyTableViewHeader" = "Privacy";
 "ESSYouTubeiOSUsernameCellTitle" = "Username";
@@ -69,6 +69,8 @@ YOUTUBE
 "ESSYouTubeiOSCategoryCellTitle" = "Category";
 "ESSYouTubeiOSPrivateCellTitle" = "Private Video";
 "ESSYouTubeiOSSelectCategoryButton" = "Select Category";
+"optional" = "optional";
+"required" = "required";
 
 /*
 FLICKR
@@ -85,6 +87,25 @@ FLICKR
 "ESSFlickrDefaultTitle" = "Movie";
 "ESSFlickrUnknownUsername" = "Unknown Username";
 
+"ESSFlickriOSAccountInfoFooter" = "Tap to log in to a different flickr account";
+"ESSFlickriOSVideoInfoTagFooter" = "Multiple tags can be separated with commas";
+"ESSFlickriOSPrivacyInfoFooter" = "Private movies can only be viewed from your account and other Flickr accounts that you authorize";
+"ESSFlickriOSAccountInfoHeader" = "Account Info";
+"ESSFlickriOSVideoInfoHeader" = "Video Info";
+"ESSFlickriOSPrivacyHeader" = "Privacy";
+"ESSFlickriOSUsernameTVCellTitle" = "Username";
+"ESSFlickriOSPrivateVideoTVCellTitle" = "Private";
+"ESSFlickriOSTitleTVCellTitle" = "Title";
+"ESSFlickriOSRequiredCellTitle" = "required";
+"ESSFlickriOSDescriptionTVCellTitle" = "Description";
+"ESSFlickriOSOptionalCellTitle" = "optional";
+"ESSFlickriOSTagsTVCellTitle" = "Tags";
+"ESSFlickriOSCancel" = "Cancel";
+"ESSFlickriOSLogin" = "Authorize";
+"ESSFlickriOSUpload" = "Upload";
+"ESSFlickrWaitingForFlickrToVerifyVideo" = "Verifying Upload...";
+"ESSFlickriOSDone" = "Done";
+
 /*
 VIMEO
 */
@@ -98,3 +119,26 @@ VIMEO
 "ESSVimeoUploadSucceeded" = "Your movie was successfully published to Vimeo.";
 "ESSVimeoUnknownUsername" = "Unknown Username";
 "ESSVimeoDefaultTitle" = "Movie";
+
+"ESSVimeoUploadPercentageDone" = "%ld%% uploaded";
+"ESSVimeoWaitingForVimeoToVerifyVideo" = "Verifying Upload...";
+"ESSVimeoiOSCancel" = "Cancel";
+"ESSVimeoiOSLogin" = "Authorize";
+"ESSVimeoiOSUpload" = "Upload";
+"ESSVimeoiOSDone" = "Done";
+"ESSVimeoiOSNoSpaceWarning" = "There is no space left for this video in your Vimeo account.";
+"ESSVimeoiOSNoPlusAccountWarning" = "This app can only upload to Vimeo PLUS accounts.";
+"ESSVimeoiOSTitleTVCellTitle" = "Title";
+"ESSVimeoiOSDescriptionTVCellTitle" = "Description";
+"ESSVimeoiOSTagsTVCellTitle" = "Tags";
+"ESSVimeoiOSRequiredCellTitle" = "required";
+"ESSVimeoiOSOptionalCellTitle" = "optional";
+"ESSVimeoiOSAccountInfoFooter" = "Tap to log in to a different Vimeo account";
+"ESSVimeoiOSVideoInfoTagFooter" = "Multiple tags can be separated with commas";
+"ESSVimeoiOSAccountVideoInfoTagFooter" = "Multiple tags can be separated with commas";
+"ESSVimeoiOSPrivacyInfoFooter" = "Private movies can only be viewed from your account and other Vimeo accounts that you authorize";
+"ESSVimeoiOSAccountInfoHeader" = "Account Info";
+"ESSVimeoiOSVideoInfoHeader" = "Video Info";
+"ESSVimeoiOSPrivacyHeader" = "Privacy";
+"ESSVimeoiOSUsernameTVCellTitle" = "Username";
+"ESSVimeoiOSPrivateVideoTVCellTitle" = "Private";
