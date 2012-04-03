@@ -8,7 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import "OAuthConsumer.h"
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 #import "ESSVimeoWindowController.h"
+#else
+#import "ESSVimeoiOSViewController.h"
+#endif
 
 #define ESSLocalizedString(key, comment) NSLocalizedStringFromTableInBundle((key),nil,[NSBundle bundleForClass:[self class]],(comment))
 
@@ -23,15 +27,27 @@
 @protocol ESSVimeoDelegate <NSObject>
 
 @required
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (NSWindow *)ESSVimeoNeedsWindowToAttachWindowTo:(ESSVimeo *)uploader;
+#else
+- (UIViewController *)ESSVimeoNeedsViewControllerToAttachTo:(ESSVimeo *)uploader;
+#endif
 - (void)ESSVimeoFinished:(ESSVimeo *)uploader;
 
 @end
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @interface ESSVimeo : NSObject <ESSVimeoWindowDelegate>
+#else
+@interface ESSVimeo : NSObject <ESSVimeoiOSViewControllerDelegate>
+#endif
 
 @property (assign) id delegate;
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @property (retain) ESSVimeoWindowController *_winCtr;
+#else
+@property (retain) ESSVimeoiOSViewController *_viewCtr;
+#endif
 @property (assign) BOOL plusOnly;
 @property (retain) OAToken *_requestToken;
 @property (retain) OAToken *_authToken;
@@ -66,6 +82,10 @@
 - (void)_startAuthorization; //√ callback addition in format oauthcallback?
 
 - (void)_deauthorize;
+
+#if (TARGET_OS_IPHONE || TARGET_OS_EMBEDDED || TARGET_IPHONE_SIMULATOR)
+- (void)handleiOSURL:(NSURL *)url;
+#endif
 
 #pragma mark -
 #pragma mark Upload

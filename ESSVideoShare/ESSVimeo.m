@@ -10,7 +10,11 @@
 
 @implementation ESSVimeo
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @synthesize _requestToken,_authToken,_oaconsumer,_sigProv,delegate,plusOnly,_byteSizeOfVideo,_uploader,_uploadTicketID,_title,_description,_isPrivate,_tags,_winCtr;
+#else
+@synthesize _requestToken,_authToken,_oaconsumer,_sigProv,delegate,plusOnly,_byteSizeOfVideo,_uploader,_uploadTicketID,_title,_description,_isPrivate,_tags,_viewCtr;
+#endif
 
 - (id)initWithAPIKey:(NSString *)key
 			  secret:(NSString *)secret
@@ -21,7 +25,11 @@
 	{
 		self._oaconsumer = [[[OAConsumer alloc] initWithKey:key secret:secret] autorelease];
 		self._sigProv = [[[OAHMAC_SHA1SignatureProvider alloc] init] autorelease];
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		self.delegate = (del ? del:[NSApp delegate]);
+#else
+		self.delegate = (del ? del:[[UIApplication sharedApplication] delegate]);
+#endif
 		self.plusOnly = canUploadToPlusOnly;
 		
 		return self;
@@ -38,6 +46,7 @@
 	self._byteSizeOfVideo = (NSUInteger)[[[NSFileManager defaultManager] attributesOfItemAtPath:url.fileReferenceURL.path error:nil] fileSize];
 	self._authToken = [[[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:@"essvimeo" prefix:@"essvimeovideoupload"] autorelease];
 	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._winCtr = [[[ESSVimeoWindowController alloc] initWithVideoURL:url delegate:self] autorelease];
 	[self._winCtr loadWindow];
 	
@@ -57,31 +66,55 @@
 		[self._winCtr.window center];
 		[self._winCtr.window makeKeyAndOrderFront:nil];
 	}
+#else
+	self._viewCtr = [[[ESSVimeoiOSViewController alloc] initWithVideoURL:url delegate:self] autorelease];
+	self._viewCtr.delegate = self;
+	UINavigationController *navCtr = [[[UINavigationController alloc] initWithRootViewController:self._viewCtr] autorelease];
+	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+		navCtr.modalPresentationStyle = UIModalPresentationFormSheet;
+	self._viewCtr.navCtr = navCtr;
+	
+	UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+	if ([self.delegate respondsToSelector:@selector(ESSVimeoNeedsViewControllerToAttachTo:)])
+		currVCtr = [self.delegate ESSVimeoNeedsViewControllerToAttachTo:self];
+	
+	[currVCtr presentViewController:self._viewCtr.navCtr animated:YES completion:nil];
+	
+	if (self._authToken == nil)
+		[self._viewCtr switchToLoginViewWithAnimation:NO];
+	else
+		[self _getQuotaJustConfirmingLogin:YES];
+#endif
 }
-
-//zlidez://eternalstorms.at/
 
 #pragma mark -
 #pragma mark Authorization
 
 - (void)_startAuthorization
 {	
-//#if !TARGET_OS_IPHONE
+	//#if !TARGET_OS_IPHONE
 	//this is just for MAC OS.
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	LSSetDefaultHandlerForURLScheme((CFStringRef)@"essvimeo", (CFStringRef)[[NSBundle mainBundle] bundleIdentifier]);
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
 													   andSelector:@selector(handleGetFlickrOAuthURL:withReplyEvent:)
 													 forEventClass:kInternetEventClass
 														andEventID:kAEGetURL];
 	//end mac os code
-//#endif
+	//#endif
+#endif
 	
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 		NSURL *url = [NSURL URLWithString:VIMEO_OAUTH_REQUEST_TOKEN_URL];
 		OAMutableURLRequest *req = [[OAMutableURLRequest alloc] initWithURL:url consumer:self._oaconsumer token:nil realm:nil signatureProvider:self._sigProv];
 		[req setCachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
 		[req setHTTPMethod:@"GET"];
-		
+		[req setOAuthParameterName:@"oauth_callback" withValue:@"oob"]; //oob
+		/*OARequestParameter *par = [[OARequestParameter alloc] initWithName:@"oauth_callback" value:@"essvimeo:"]; //oob
+		 NSMutableArray *params = [NSMutableArray arrayWithArray:[req parameters]];
+		 [params addObject:par];
+		 [par release];
+		 [req setParameters:params];*/
 		[req prepare];
 		
 		NSError *err = nil;
@@ -91,10 +124,16 @@
 		if (data == nil || resp == nil || err != nil)
 		{
 			//start auth over.
-			[self._winCtr.loginStatusField setHidden:YES];
-			[self._winCtr.loginStatusProgressIndicator setHidden:YES];
-			[self._winCtr.authorizeButton setEnabled:YES];
-			[self._winCtr.authorizeButton setHidden:NO];
+			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+				[self._winCtr.loginStatusField setHidden:YES];
+				[self._winCtr.loginStatusProgressIndicator setHidden:YES];
+				[self._winCtr.authorizeButton setEnabled:YES];
+				[self._winCtr.authorizeButton setHidden:NO];
+#else
+				[self._viewCtr resetLoginView];
+#endif
+			});
 		} else //got result
 		{
 			if ([(NSHTTPURLResponse *)resp statusCode] < 400)
@@ -103,34 +142,50 @@
 				if (result == nil)
 				{
 					//start auth over
-					[self._winCtr.loginStatusField setHidden:YES];
-					[self._winCtr.loginStatusProgressIndicator setHidden:YES];
-					[self._winCtr.authorizeButton setEnabled:YES];
-					[self._winCtr.authorizeButton setHidden:NO];
+					dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+						[self._winCtr.loginStatusField setHidden:YES];
+						[self._winCtr.loginStatusProgressIndicator setHidden:YES];
+						[self._winCtr.authorizeButton setEnabled:YES];
+						[self._winCtr.authorizeButton setHidden:NO];
+#else
+						[self._viewCtr resetLoginView];
+#endif
+					});
 					return;
 				}
-				
 				self._requestToken = [[[OAToken alloc] initWithHTTPResponseBody:result] autorelease];
 				
 				dispatch_async(dispatch_get_main_queue(), ^{
-					NSString *urlStr = [NSString stringWithFormat:@"%@?%@&permission=write",VIMEO_OAUTH_AUTH_URL,result];
+					NSString *urlStr = [NSString stringWithFormat:@"%@?%@&permission=write&oauth_callback=essvimeo",VIMEO_OAUTH_AUTH_URL,result];
 					NSURL *url = [NSURL URLWithString:urlStr];
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 					[[NSWorkspace sharedWorkspace] openURL:url];
+#else
+					[[UIApplication sharedApplication] openURL:url];
+#endif
 				});
 				
 				[result release];
 			} else
 			{
 				//start auth over
-				[self._winCtr.loginStatusField setHidden:YES];
-				[self._winCtr.loginStatusProgressIndicator setHidden:YES];
-				[self._winCtr.authorizeButton setEnabled:YES];
-				[self._winCtr.authorizeButton setHidden:NO];
+				dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+					[self._winCtr.loginStatusField setHidden:YES];
+					[self._winCtr.loginStatusProgressIndicator setHidden:YES];
+					[self._winCtr.authorizeButton setEnabled:YES];
+					[self._winCtr.authorizeButton setHidden:NO];
+#else
+					[self._viewCtr resetLoginView];
+#endif
+				});
 			}
 		}
 	});
 }
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (void)handleGetFlickrOAuthURL:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
 	__block NSString *retStr = [[[event paramDescriptorForKeyword:keyDirectObject] stringValue] retain];
@@ -227,6 +282,84 @@
 		[retStr release];
 	});
 }
+#else
+- (void)handleiOSURL:(NSURL *)url
+{
+	[url retain];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		[url autorelease];
+		NSString *retStr = [url.absoluteString retain];
+		NSRange oauthTokenRange = [retStr rangeOfString:@"oauth_token="];
+		NSRange verifierRange = [retStr rangeOfString:@"oauth_verifier="];
+		
+		if (oauthTokenRange.location == NSNotFound || verifierRange.location == NSNotFound)
+		{
+			//start auth over
+			[self._viewCtr resetLoginView];
+		} else
+		{
+			NSString *oauth_token = [retStr substringFromIndex:oauthTokenRange.location + oauthTokenRange.length];
+			oauth_token = [oauth_token substringToIndex:[oauth_token rangeOfString:@"&"].location];
+			NSString *oauth_verifier = [retStr substringFromIndex:verifierRange.location + verifierRange.length];
+			
+			NSURL *authorizeURL = [NSURL URLWithString:VIMEO_OAUTH_ACCESS_TOKEN_URL];
+			OAMutableURLRequest *req = [[OAMutableURLRequest alloc] initWithURL:authorizeURL
+																	   consumer:self._oaconsumer
+																		  token:self._requestToken
+																		  realm:nil
+															  signatureProvider:self._sigProv];
+			[req setHTTPMethod:@"GET"];
+			[req setOAuthParameterName:@"oauth_verifier" withValue:oauth_verifier];
+			[req prepare];
+			NSError *err = nil;
+			NSURLResponse *resp = nil;
+			NSData *data = [NSURLConnection sendSynchronousRequest:req returningResponse:&resp error:&err];
+			[req release];
+			self._requestToken = nil;
+			if (data == nil || resp == nil || err != nil)
+			{
+				//start auth over
+				[self._viewCtr resetLoginView];
+			} else
+			{
+				if ([(NSHTTPURLResponse *)resp statusCode] < 400)
+				{
+					NSString *authTokenStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+					
+					if (authTokenStr == nil)
+					{
+						//start auth over
+						[self._viewCtr resetLoginView];
+						return;
+					}
+					
+					self._authToken = [[[OAToken alloc] initWithHTTPResponseBody:authTokenStr] autorelease];
+					[self._authToken storeInUserDefaultsWithServiceProviderName:@"essvimeo" prefix:@"essvimeovideoupload"];
+					
+					[authTokenStr release];
+					
+					if (self._authToken == nil)
+					{
+						//start auth over
+						[self._viewCtr resetLoginView];
+					} else
+					{
+						//auth good, getQuota
+						dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+							[self _getQuotaJustConfirmingLogin:NO];
+						});
+					}
+				} else
+				{
+					//start auth over
+					[self._viewCtr resetLoginView];
+				}
+			}
+		}
+		[retStr release];
+	});
+}
+#endif
 
 - (void)_getQuotaJustConfirmingLogin:(BOOL)confirming
 {
@@ -237,10 +370,14 @@
 		[self _deauthorize];
 		
 		//show auth view in window
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._winCtr.loginStatusField setHidden:YES];
 		[self._winCtr.loginStatusProgressIndicator setHidden:YES];
 		[self._winCtr.authorizeButton setEnabled:YES];
 		[self._winCtr.authorizeButton setHidden:NO];
+#else
+		[self._viewCtr resetLoginView];
+#endif
 		
 		return;
 	} else
@@ -259,12 +396,16 @@
 			[self _deauthorize];
 			
 			//show auth view in window
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr.loginStatusField setHidden:YES];
 			[self._winCtr.loginStatusProgressIndicator setHidden:YES];
 			[self._winCtr.authorizeButton setEnabled:YES];
 			[self._winCtr.authorizeButton setHidden:NO];
 			
 			[self._winCtr switchToLoginViewWithAnimation:!confirming];
+#else
+			[self._viewCtr switchToLoginViewWithAnimation:!confirming];
+#endif
 			
 			return;
 		}
@@ -290,33 +431,57 @@
 		if (self.plusOnly && !isPlus && !confirming)
 		{
 			//the key has plus-access only, but we are not plus, so return error.
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr showNoPlusAccountWarning];
+#else
+			[self._viewCtr showNoPlusAccountWarning];
+#endif
 			return;
 		} else if (self.plusOnly && !isPlus && confirming)
 		{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr switchToLoginViewWithAnimation:NO];
+#else
+			[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 			return;
 		}
 		
 		if (sdQuota <= 0 && hdQuota <= 0 && !confirming)
 		{
 			//no uploads left.
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr showNoSpaceLeftWarning];
+#else
+			[self._viewCtr showNoSpaceLeftWarning];
+#endif
 			return;
 		} else if (sdQuota <= 0 && hdQuota <= 0 && confirming)
 		{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr switchToLoginViewWithAnimation:NO];
+#else
+			[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 			return;
 		}
 		
 		if ((self._byteSizeOfVideo > freeSpaceBytes || self._byteSizeOfVideo > maxBytes) && !confirming)
 		{
 			//video too large for upload
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr showNoSpaceLeftWarning];
+#else
+			[self._viewCtr showNoSpaceLeftWarning];
+#endif
 			return;
 		} else if ((self._byteSizeOfVideo > freeSpaceBytes || self._byteSizeOfVideo > maxBytes) && confirming)
 		{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr switchToLoginViewWithAnimation:NO];
+#else
+			[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 			return;
 		}
 		
@@ -339,17 +504,22 @@
 		//got username, continue.
 		
 		//set username to window's usernamefield, switch to upload info view
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		self._winCtr.usernameField.stringValue = username;
 		self._winCtr.titleField.stringValue = ESSLocalizedString(@"ESSVimeoDefaultTitle", nil);
 		[self._winCtr switchToUploadViewWithAnimation:!confirming];
+#else
+		[self._viewCtr updateUsername:username];
+		[self._viewCtr switchToUploadViewWithAnimation:!confirming];
+#endif
 	}
 }
 
 - (void)_uploadVideoAtURL:(NSURL *)url
-				   title:(NSString *)vidTitle
-			 description:(NSString *)descr
-					tags:(NSString *)vidTags
-			 makePrivate:(BOOL)makePrivate
+					title:(NSString *)vidTitle
+			  description:(NSString *)descr
+					 tags:(NSString *)vidTags
+			  makePrivate:(BOOL)makePrivate
 {
 	if (url == nil || self._authToken == nil || self._oaconsumer == nil || self._uploader != nil)
 		return;
@@ -367,7 +537,11 @@
 			if (response == nil)
 			{
 				//error uploading
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._winCtr uploadFinishedWithURL:nil];
+#else
+				[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 				return;
 			}
 			
@@ -376,7 +550,11 @@
 			if (ticketRange.location == NSNotFound || ticketIDRange.location == NSNotFound)
 			{
 				//error getting ticket.
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._winCtr uploadFinishedWithURL:nil];
+#else
+				[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 				return;
 			}
 			
@@ -419,7 +597,11 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	[self._winCtr uploadFinishedWithURL:nil];
+#else
+	[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -428,20 +610,33 @@
 
 - (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	[self._winCtr uploadUpdatedWithBytes:totalBytesWritten ofTotal:totalBytesExpectedToWrite];
+#else
+	[self._viewCtr uploadUpdatedWithUploadedBytes:totalBytesWritten ofTotalBytes:totalBytesExpectedToWrite];
+#endif
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
 	//(verify and) finish upload
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		NSString *response = [self _executeMethod:@"vimeo.videos.upload.complete"
 								   withParameters:[NSDictionary dictionaryWithObjectsAndKeys:[self._winCtr.videoURL lastPathComponent],@"filename",self._uploadTicketID,@"ticket_id", nil]];
+#else
+		NSString *response = [self _executeMethod:@"vimeo.videos.upload.complete"
+								   withParameters:[NSDictionary dictionaryWithObjectsAndKeys:[self._viewCtr.videoURL lastPathComponent],@"filename",self._uploadTicketID,@"ticket_id", nil]];
+#endif
 		if (response == nil)
 		{
 			//error finishing / upload
 			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._winCtr uploadFinishedWithURL:nil];
+#else
+				[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 			});
 			return;
 		}
@@ -451,7 +646,11 @@
 		{
 			//error with upload
 			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._winCtr uploadFinishedWithURL:nil];
+#else
+				[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 			});
 			return;
 		}
@@ -472,11 +671,16 @@
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//now let window know we're done.
 			NSURL *_videoURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://vimeo.com/%@",videoID]];
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._winCtr uploadFinishedWithURL:_videoURL];
+#else
+			[self._viewCtr uploadFinishedWithURL:_videoURL];
+#endif
 		});
 	});
 }
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (void)vimeoWindowIsFinished:(ESSVimeoWindowController *)ctr
 {
 	[self._uploader cancel];
@@ -485,6 +689,22 @@
 	if ([self.delegate respondsToSelector:@selector(ESSVimeoFinished:)])
 		[self.delegate ESSVimeoFinished:self];
 }
+#else
+- (void)vimeoIsFinished:(ESSVimeoiOSViewController *)ctr
+{
+	[self._uploader cancel];
+	self._uploader = nil;
+	
+	UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+	if ([self.delegate respondsToSelector:@selector(ESSVimeoNeedsViewControllerToAttachTo:)])
+		currVCtr = [self.delegate ESSVimeoNeedsViewControllerToAttachTo:self];
+	
+	[currVCtr dismissViewControllerAnimated:YES completion:^{
+		if ([self.delegate respondsToSelector:@selector(ESSVimeoFinished:)])
+			[self.delegate ESSVimeoFinished:self];
+	}];
+}
+#endif
 
 - (NSString *)_executeMethod:(NSString *)method
 			  withParameters:(NSDictionary *)parameters
@@ -567,7 +787,11 @@
 	self._title = nil;
 	self._description = nil;
 	self._tags = nil;
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._winCtr = nil;
+#else
+	self._viewCtr = nil;
+#endif
 	
 	[super dealloc];
 }
