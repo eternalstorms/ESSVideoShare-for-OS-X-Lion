@@ -10,7 +10,122 @@
 
 @implementation ESSFlickr
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 @synthesize delegate,_oaconsumer,_sigProv,_authToken,_requestToken,_flWinCtr,_uploader,_resultData;
+#else
+@synthesize delegate,_oaconsumer,_sigProv,_authToken,_requestToken,_viewCtr,_uploader,_resultData;
+
+/*
+ the following two functions are taken directly from http://opensource.apple.com/source/CF/CF-635/CFXMLParser.c since it's not available on iOS for a reason unknown to me
+ */
+
+CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator, CFStringRef string, CFDictionaryRef entitiesDictionary) {
+	CFStringInlineBuffer inlineBuf;
+	CFStringRef sub;
+	CFIndex lastChunkStart, length = CFStringGetLength(string);
+	CFIndex i, entityStart;
+	UniChar uc;
+	UInt32 entity;
+	int base;
+	CFMutableDictionaryRef fullReplDict = entitiesDictionary ? CFDictionaryCreateMutableCopy(allocator, 0, entitiesDictionary) : CFDictionaryCreateMutable(allocator, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+	
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("amp"), (const void *)CFSTR("&"));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("quot"), (const void *)CFSTR("\""));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("lt"), (const void *)CFSTR("<"));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("gt"), (const void *)CFSTR(">"));
+	CFDictionaryAddValue(fullReplDict, (const void *)CFSTR("apos"), (const void *)CFSTR("'"));
+	
+	CFStringInitInlineBuffer(string, &inlineBuf, CFRangeMake(0, length - 1));
+	CFMutableStringRef newString = CFStringCreateMutable(allocator, 0);
+	
+	lastChunkStart = 0;
+	// Scan through the string in its entirety
+	for(i = 0; i < length; ) {
+		uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;	// grab the next character and move i.
+		
+		if(uc == '&') {
+			entityStart = i - 1;
+			entity = 0xFFFF;	// set this to a not-Unicode character as sentinel
+			// we've hit the beginning of an entity. Copy everything from lastChunkStart to this point.
+			if(lastChunkStart < i - 1) {
+				sub = CFStringCreateWithSubstring(allocator, string, CFRangeMake(lastChunkStart, (i - 1) - lastChunkStart));
+				CFStringAppend(newString, sub);
+				CFRelease(sub);
+			}
+			
+			uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;	// grab the next character and move i.
+			// Now we can process the entity reference itself
+			if(uc == '#') {	// this is a numeric entity.
+				base = 10;
+				entity = 0;
+				uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+				
+				if(uc == 'x') {	// only lowercase x allowed. Translating numeric entity as hexadecimal.
+					base = 16;
+					uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+				}
+				
+				// process the provided digits 'til we're finished
+				while(true) {
+					if (uc >= '0' && uc <= '9')
+						entity = entity * base + (uc-'0');
+					else if (uc >= 'a' && uc <= 'f' && base == 16)
+						entity = entity * base + (uc-'a'+10);
+					else if (uc >= 'A' && uc <= 'F' && base == 16)
+						entity = entity * base + (uc-'A'+10);
+					else break;
+					
+					if (i < length) {
+						uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+					}
+					else
+						break;
+				}
+			}
+			
+			// Scan to the end of the entity
+			while(uc != ';' && i < length) {
+				uc = CFStringGetCharacterFromInlineBuffer(&inlineBuf, i); i++;
+			}
+			
+			if(0xFFFF != entity) { // it was numeric, and translated.
+				// Now, output the result fo the entity
+				if(entity >= 0x10000) {
+					UniChar characters[2] = { ((entity - 0x10000) >> 10) + 0xD800, ((entity - 0x10000) & 0x3ff) + 0xDC00 };
+					CFStringAppendCharacters(newString, characters, 2);
+				} else {
+					UniChar character = entity;
+					CFStringAppendCharacters(newString, &character, 1);
+				}
+			} else {	// it wasn't numeric.
+				sub = CFStringCreateWithSubstring(allocator, string, CFRangeMake(entityStart + 1, (i - entityStart - 2))); // This trims off the & and ; from the string, so we can use it against the dictionary itself.
+				CFStringRef replacementString = (CFStringRef)CFDictionaryGetValue(fullReplDict, sub);
+				if(replacementString) {
+					CFStringAppend(newString, replacementString);
+				} else {
+					CFRelease(sub); // let the old substring go, since we didn't find it in the dictionary
+					sub =  CFStringCreateWithSubstring(allocator, string, CFRangeMake(entityStart, (i - entityStart))); // create a new one, including the & and ;
+					CFStringAppend(newString, sub); // ...and append that.
+				}
+				CFRelease(sub); // in either case, release the most-recent "sub"
+			}
+			
+			// move the lastChunkStart to the beginning of the next chunk.
+			lastChunkStart = i;
+		}
+	}
+	if(lastChunkStart < length) { // we've come out of the loop, let's get the rest of the string and tack it on.
+		sub = CFStringCreateWithSubstring(allocator, string, CFRangeMake(lastChunkStart, i - lastChunkStart));
+		CFStringAppend(newString, sub);
+		CFRelease(sub);
+	}
+	
+	CFRelease(fullReplDict);
+	
+	return newString;
+}
+
+#endif
 
 - (id)initWithDelegate:(id)del
 		applicationKey:(NSString *)key
@@ -35,12 +150,14 @@
 	
 	//check length of video
 	//if longer than 90 secs, refuse and show alert
+	AVURLAsset *vid = [[[AVURLAsset alloc] initWithURL:url options:nil] autorelease];
+	CGFloat duration = vid.duration.value/vid.duration.timescale;
+	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	NSWindow *attachWindow = [NSApp mainWindow];
 	if ([self.delegate respondsToSelector:@selector(ESSFlickrNeedsWindowToAttachTo:)])
 		attachWindow = [self.delegate ESSFlickrNeedsWindowToAttachTo:self];
 	
-	AVURLAsset *vid = [[[AVURLAsset alloc] initWithURL:url options:nil] autorelease];
-	CGFloat duration = vid.duration.value/vid.duration.timescale;
 	if (duration > 90.0)
 	{
 		if (attachWindow != nil)
@@ -63,10 +180,41 @@
 			[self.delegate ESSFlickrDidFinish:self];
 		return;
 	}
+#else	
+	if (duration > 90.0)
+	{
+		UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrMovieTooLongTitle",nil)
+													 message:ESSLocalizedString(@"ESSFlickrMovieTooLongMsg",nil)
+													delegate:nil
+										   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+										   otherButtonTitles:nil];
+		
+		[aV show];
+		[aV release];
+		
+		if ([self.delegate respondsToSelector:@selector(ESSFlickrDidFinish:)])
+			[self.delegate ESSFlickrDidFinish:self];
+		return;
+	}
+#endif
 	
 	//initiate window controller
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._flWinCtr = [[[ESSFlickrWindowController alloc] initWithDelegate:self videoURL:url] autorelease];
 	[self._flWinCtr loadWindow];
+#else
+	self._viewCtr = [[[ESSFlickriOSViewController alloc] initWithDelegate:self videoURL:url] autorelease];
+	[self._viewCtr loadView];
+	
+	UINavigationController *navCtr = [[[UINavigationController alloc] initWithRootViewController:self._viewCtr] autorelease];
+	if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
+		navCtr.modalPresentationStyle = UIModalPresentationFormSheet;
+	self._viewCtr.navCtr = navCtr;
+	
+	UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+	if ([self.delegate respondsToSelector:@selector(ESSFlickrNeedsViewController:)])
+		currVCtr = [self.delegate ESSFlickrNeedsViewController:self];
+#endif
 	
 	//get authToken from Prefs
 	self._authToken = [[[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:@"essflickr" prefix:@"essflickrvideoupload"] autorelease];
@@ -82,18 +230,28 @@
 			if (username == nil)
 				username = ESSLocalizedString(@"ESSFlickrUnknownUsername", nil);
 			//set username
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			self._flWinCtr.usernameField.stringValue = username;
 			[self._flWinCtr switchToUploadViewWithAnimation:NO];
+#else
+			[self._viewCtr updateUsername:username];
+			[self._viewCtr switchToUploadViewWithAnimation:NO];
+#endif
 		} else
 		{
 			if (tokenInvalid)
 			{
 				//show auth window
 				[self _deauthorize];
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._flWinCtr switchToAuthorizeViewWithAnimation:NO];
+#else
+				[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 			} else if (!tokenInvalid)
 			{
 				//user is over quota. dismiss and show alert sheet
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				if (attachWindow != nil)
 				{
 					NSBeginAlertSheet(ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil),
@@ -109,6 +267,17 @@
 									ESSLocalizedString(@"ESSFlickrOKButton",nil),
 									nil, nil);
 				}
+#else
+				[currVCtr dismissViewControllerAnimated:YES completion:nil];
+				UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil)
+															 message:ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil)
+															delegate:nil
+												   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+												   otherButtonTitles:nil];
+				
+				[aV show];
+				[aV release];
+#endif
 				
 				if ([self.delegate respondsToSelector:@selector(ESSFlickrDidFinish:)])
 					[self.delegate ESSFlickrDidFinish:self];
@@ -119,9 +288,14 @@
 	{
 		//show window with login notice for website redirection
 		//authorization started by user by clicking a button
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._flWinCtr switchToAuthorizeViewWithAnimation:NO];
+#else
+		[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 	}
 	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	if (attachWindow != nil)
 		[NSApp beginSheet:self._flWinCtr.window modalForWindow:attachWindow modalDelegate:nil didEndSelector:nil contextInfo:nil];
 	else
@@ -129,20 +303,40 @@
 		[self._flWinCtr.window center];
 		[self._flWinCtr.window makeKeyAndOrderFront:nil];
 	}
+#else
+	[currVCtr presentViewController:self._viewCtr.navCtr animated:YES completion:nil];
+#endif
 }
 
+
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (void)flickrWindowDidCancel:(ESSFlickrWindowController *)flickrWinCtr
 {
 	[self._uploader cancel];
 	self._uploader = nil;
 	
+	
+	
 	if ([self.delegate respondsToSelector:@selector(ESSFlickrDidFinish:)])
 		[self.delegate ESSFlickrDidFinish:self];
 }
+#else
+- (void)flickrDidCancel:(ESSFlickriOSViewController *)flickrCtr
+{
+	UIViewController *currVCtr = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+	if ([self.delegate respondsToSelector:@selector(ESSVimeoNeedsViewControllerToAttachTo:)])
+		currVCtr = [self.delegate ESSFlickrNeedsViewController:self];
+	
+	[currVCtr dismissViewControllerAnimated:YES completion:^{
+		if ([self.delegate respondsToSelector:@selector(ESSFlickrDidFinish:)])
+			[self.delegate ESSFlickrDidFinish:self];
+	}];
+}
+#endif
 
 - (void)_authorize
 {
-#if !TARGET_OS_IPHONE
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	//this is just for MAC OS.
 	LSSetDefaultHandlerForURLScheme((CFStringRef)@"essflickrvideoupload", (CFStringRef)[[NSBundle mainBundle] bundleIdentifier]);
 	[[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
@@ -168,7 +362,11 @@
 			if (data == nil || resp == nil || err != nil)
 			{
 				//show something wrent wrong in our window
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._flWinCtr switchToAuthorizeViewWithAnimation:NO];
+#else
+				[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 			} else //got result
 			{
 				if ([(NSHTTPURLResponse *)resp statusCode] < 400)
@@ -177,7 +375,11 @@
 					if (result == nil)
 					{
 						//show something wrent wrong in our window
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 						[self._flWinCtr switchToAuthorizeViewWithAnimation:NO];
+#else
+						[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 					} else
 					{
 						self._requestToken = [[[OAToken alloc] initWithHTTPResponseBody:result] autorelease];
@@ -187,7 +389,11 @@
 						dispatch_async(dispatch_get_main_queue(), ^{
 							NSString *urlStr = [NSString stringWithFormat:@"http://www.flickr.com/services/oauth/authorize?%@&perms=write",result];
 							NSURL *url = [NSURL URLWithString:urlStr];
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 							[[NSWorkspace sharedWorkspace] openURL:url];
+#else
+							[[UIApplication sharedApplication] openURL:url];
+#endif
 							[result release];
 						});
 					}
@@ -196,7 +402,11 @@
 				} else
 				{
 					//show something wrent wrong in our window
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 					[self._flWinCtr switchToAuthorizeViewWithAnimation:NO];
+#else
+					[self._viewCtr switchToLoginViewWithAnimation:NO];
+#endif
 				}
 			}
 			[data release];
@@ -204,6 +414,7 @@
 	});
 }
 
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 - (void)handleGetFlickrOAuthURL:(NSAppleEventDescriptor *)event withReplyEvent:(NSAppleEventDescriptor *)replyEvent
 {
 	__block NSString *retStr = [[[event paramDescriptorForKeyword:keyDirectObject] stringValue] retain];
@@ -334,6 +545,121 @@
 		[retStr release];
 	});
 }
+#else
+- (void)handleOpenURL:(NSURL *)url
+{
+	__block NSString *retStr = [url.absoluteString retain];
+	
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		NSRange oauthTokenRange = [retStr rangeOfString:@"oauth_token="];
+		NSRange verifierRange = [retStr rangeOfString:@"oauth_verifier="];
+		
+		if (oauthTokenRange.location == NSNotFound || verifierRange.location == NSNotFound)
+		{
+			//show something wrent wrong in our window
+			[self._viewCtr switchToLoginViewWithAnimation:NO];
+		} else
+		{
+			NSString *oauth_token = [retStr substringFromIndex:oauthTokenRange.location + oauthTokenRange.length];
+			oauth_token = [oauth_token substringToIndex:[oauth_token rangeOfString:@"&"].location];
+			NSString *oauth_verifier = [retStr substringFromIndex:verifierRange.location + verifierRange.length];
+			
+			NSURL *authorizeURL = [NSURL URLWithString:@"http://www.flickr.com/services/oauth/access_token"];
+			OAMutableURLRequest *req = [[OAMutableURLRequest alloc] initWithURL:authorizeURL
+																	   consumer:self._oaconsumer
+																		  token:self._requestToken
+																		  realm:nil
+															  signatureProvider:self._sigProv];
+			[req setHTTPMethod:@"GET"];
+			[req setOAuthParameterName:@"oauth_verifier" withValue:oauth_verifier];
+			[req prepare];
+			
+			NSError *err = nil;
+			NSURLResponse *resp = nil;
+			__block NSData *data = [[NSURLConnection sendSynchronousRequest:req returningResponse:&resp error:&err] retain];
+			[req release];
+			[retStr retain];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				self._requestToken = nil;
+				if (data == nil || resp == nil || err != nil)
+				{
+					//show something wrent wrong in our window
+					[self._viewCtr switchToLoginViewWithAnimation:NO];
+				} else
+				{
+					if ([(NSHTTPURLResponse *)resp statusCode] < 400)
+					{
+						NSString *authTokenStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+						if (authTokenStr == nil)
+						{
+							//show something wrent wrong in our window
+							[self._viewCtr switchToLoginViewWithAnimation:NO];
+						} else
+						{
+							self._authToken = [[[OAToken alloc] initWithHTTPResponseBody:authTokenStr] autorelease];
+							[self._authToken storeInUserDefaultsWithServiceProviderName:@"essflickr" prefix:@"essflickrvideoupload"];
+							
+							NSString *name = nil;
+							NSRange fullnameRange = [authTokenStr rangeOfString:@"fullname="];
+							NSRange usernameRange = [authTokenStr rangeOfString:@"username="];
+							if (fullnameRange.location != NSNotFound)
+							{
+								name = [authTokenStr substringFromIndex:fullnameRange.location + fullnameRange.length];
+								name = [name substringToIndex:[name rangeOfString:@"&"].location];
+								name = [self _unescapedString:name];
+							} else if (usernameRange.location != NSNotFound)
+								name = [authTokenStr substringFromIndex:usernameRange.location + usernameRange.length];
+							
+							if (name != nil)
+								[[NSUserDefaults standardUserDefaults] setObject:name forKey:@"essflickrvideouploadUsername"];
+							else
+								name = ESSLocalizedString(@"ESSFlickrUnknownUsername", nil);
+							
+							if (self._authToken == nil)
+							{
+								//show something wrent wrong in our window
+								[self._viewCtr switchToLoginViewWithAnimation:NO];
+							} else
+							{
+								//auth worked
+								if ([self _canUploadVideosKeyInvalidCheck:nil] == YES)
+								{
+									//let windowobject know about it, show upload settings
+									//set name
+									[self._viewCtr updateUsername:name];
+									[self._viewCtr switchToUploadViewWithAnimation:YES];
+								} else
+								{
+									//can't upload video because user's over ratio
+									[self._viewCtr switchToLoginViewWithAnimation:NO];
+									
+									UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil)
+																				 message:ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil)
+																				delegate:nil
+																	   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+																	   otherButtonTitles:nil];
+									
+									[aV show];
+									[aV release];
+								}
+							}
+						}
+						
+						[authTokenStr release];
+					} else
+					{
+						//show something wrent wrong in our window
+						[self._viewCtr switchToLoginViewWithAnimation:NO];
+					}
+				}
+				
+				[retStr release];
+			});
+		}
+		[retStr release];
+	});
+}
+#endif
 
 - (BOOL)_canUploadVideosKeyInvalidCheck:(BOOL *)keyInvalid
 {
@@ -418,7 +744,7 @@
 		aString = [bString retain];
 	}
 	
-	NSString *returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntities(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
+	NSString *returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntitiesFlickr(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
 	
 	if (returnString == nil)
 		returnString = aString;
@@ -426,7 +752,7 @@
 	{
 		aString = [returnString retain];
 		
-		returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntities(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
+		returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntitiesFlickr(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
 		if (returnString == nil)
 			returnString = aString;
 	}
@@ -547,7 +873,11 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
 	self._uploader = nil;
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	[self._flWinCtr uploadFinishedWithFlickrURL:nil success:NO];
+#else
+	[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
@@ -560,7 +890,11 @@
 
 - (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {	
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	[self._flWinCtr uploadUpdatedWithBytes:totalBytesWritten ofTotal:totalBytesExpectedToWrite];
+#else
+	[self._viewCtr uploadUpdatedWithUploadedBytes:totalBytesWritten ofTotalBytes:totalBytesExpectedToWrite];
+#endif
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -570,13 +904,22 @@
 	
 	if ([result rangeOfString:@"<rsp stat=\"fail"].location != NSNotFound ||
 		[result rangeOfString:@"<err code=\""].location != NSNotFound)
+	{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._flWinCtr uploadFinishedWithFlickrURL:nil success:NO];
-	else
+#else
+		[self._viewCtr uploadFinishedWithURL:nil];
+#endif
+	} else
 	{
 		NSRange photoIDRange = [result rangeOfString:@"<photoid>"];
 		if (photoIDRange.location == NSNotFound)
 		{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 			[self._flWinCtr uploadFinishedWithFlickrURL:nil success:NO];
+#else
+			[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 			[result release];
 			return;
 		}
@@ -595,7 +938,11 @@
 {
 	if (photoID == nil)
 	{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 		[self._flWinCtr uploadFinishedWithFlickrURL:nil success:NO];
+#else
+		[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 		return;
 	}
 	
@@ -636,7 +983,11 @@
 			NSLog(@"err");
 			//error
 			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._flWinCtr uploadFinishedWithFlickrURL:nil success:NO];
+#else
+				[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 			});
 			return;
 		}
@@ -647,7 +998,11 @@
 			[retStr rangeOfString:@"<err code=\""].location != NSNotFound)
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._flWinCtr uploadFinishedWithFlickrURL:nil success:NO];
+#else
+				[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 			});
 			return;
 		}
@@ -668,7 +1023,11 @@
 		if (failedRange.location != NSNotFound)
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._flWinCtr uploadFinishedWithFlickrURL:nil success:NO];
+#else
+				[self._viewCtr uploadFinishedWithURL:nil];
+#endif
 			});
 			return;
 		}
@@ -680,7 +1039,11 @@
 			
 			[url retain];
 			dispatch_async(dispatch_get_main_queue(), ^{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 				[self._flWinCtr uploadFinishedWithFlickrURL:[url autorelease] success:YES];
+#else
+				[self._viewCtr uploadFinishedWithURL:[url autorelease]];
+#endif
 			});
 			return;
 		}
@@ -694,7 +1057,11 @@
 	self._sigProv = nil;
 	self._authToken = nil;
 	self._requestToken = nil;
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._flWinCtr = nil;
+#else
+	self._viewCtr = nil;
+#endif
 	self._uploader = nil;
 	self._resultData = nil;
 	
