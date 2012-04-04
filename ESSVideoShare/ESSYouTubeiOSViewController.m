@@ -177,17 +177,17 @@
 	}
 	
 	/*cell = [((UITableView *)self.videoInfoViewController.view) cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
-	UISwitch *aSwitch = nil;
-	for (UIView *view in cell.subviews)
-	{
-		if ([view isKindOfClass:[UISwitch class]])
-		{
-			aSwitch = (UISwitch *)view;
-			break;
-		}
-	}
-	
-	BOOL isPrivate = aSwitch.on;*/
+	 UISwitch *aSwitch = nil;
+	 for (UIView *view in cell.subviews)
+	 {
+	 if ([view isKindOfClass:[UISwitch class]])
+	 {
+	 aSwitch = (UISwitch *)view;
+	 break;
+	 }
+	 }
+	 
+	 BOOL isPrivate = aSwitch.on;*/
 	
 	//switch to agreement
 	[self.navContr pushViewController:self.termsViewController animated:YES];
@@ -579,6 +579,7 @@
 														  cancelButtonTitle:ESSLocalizedString(@"ESSYouTubeiOSSelectCategoryButton", nil)
 													 destructiveButtonTitle:nil
 														  otherButtonTitles:nil];
+				[ourPicker setFrame:CGRectMake(0, 92, self.view.frame.size.width, 215)];
 				[sheet addSubview:ourPicker];
 				[sheet showInView:self.videoInfoViewController.view];
 				[sheet setBounds:CGRectMake(0, 0, self.view.frame.size.width, 411)];
