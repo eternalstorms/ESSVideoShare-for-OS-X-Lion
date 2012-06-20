@@ -322,11 +322,11 @@ titleTVCell,descriptionTVCell,tagsTVCell,privacyTVCell;
 	[videoDescField resignFirstResponder];
 	NSString *description = videoDescField.text;
 	
-	if (description.length == 0)
+	/*if (description.length == 0)
 	{
 		[videoDescField becomeFirstResponder];
 		return;
-	}
+	}*/
 	
 	cell = self.tagsTVCell;
 	UITextField *videoTags = nil;
@@ -341,11 +341,11 @@ titleTVCell,descriptionTVCell,tagsTVCell,privacyTVCell;
 	[videoTags resignFirstResponder];
 	NSString *tags = videoTags.text;
 	
-	if (tags.length == 0)
+	/*if (tags.length == 0)
 	{
 		[videoTags becomeFirstResponder];
 		return;
-	}
+	}*/
 	
 	cell = [((UITableView *)self.videoInfoViewController.view) cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2]];
 	UISwitch *aSwitch = nil;

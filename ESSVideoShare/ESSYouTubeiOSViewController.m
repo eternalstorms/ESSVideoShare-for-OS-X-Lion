@@ -694,7 +694,7 @@
 	self.doneViewController.navigationItem.leftBarButtonItem = button;
 	[button release];
 	
-	button = [[UIBarButtonItem alloc] initWithTitle:ESSLocalizedString(@"ESSYouTubeiOSDoneButtonTitle",nil) style:UIBarButtonItemStyleDone target:self action:@selector(cancel:)];
+	button = [[UIBarButtonItem alloc] initWithTitle:ESSLocalizedString(@"ESSYouTubeiOSDoneButtonTitle",nil) style:UIBarButtonItemStyleDone target:self action:@selector(cancel)];
 	self.doneViewController.navigationItem.rightBarButtonItem = button;
 	[button release];
 }
