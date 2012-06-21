@@ -34,7 +34,7 @@
 	BOOL shouldfree = NO;
     
     if ([[self HTTPMethod] isEqualToString:@"GET"] || [[self HTTPMethod] isEqualToString:@"DELETE"]) 
-        encodedParameters = [[self URL] query];
+        encodedParameters = [[[self URL] query] retain];
 	else 
 	{
         // POST, PUT
@@ -43,7 +43,10 @@
     }
     
     if ((encodedParameters == nil) || ([encodedParameters isEqualToString:@""]))
-        return nil;
+	{
+		[encodedParameters release];
+		return nil;
+	}
     
     NSArray *encodedParameterPairs = [encodedParameters componentsSeparatedByString:@"&"];
     NSMutableArray *requestParameters = [[NSMutableArray alloc] initWithCapacity:16];
