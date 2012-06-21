@@ -21,7 +21,7 @@ It was inspired by QuickTime Player X's sharing functionality.
 
 # How To use ESSVideoShare
 
-[OS X Lion (Wiki)](https://github.com/eternalstorms/ESSVideoShare-for-OS-X-Lion/wiki/How-To---OS-X-Lion)
+[OS X Lion (Wiki)](https://github.com/eternalstorms/ESSVideoShare-for-OS-X-Lion/wiki/How-To-for-OS-X-Lion)
 
 [iOS (Wiki)](https://github.com/eternalstorms/ESSVideoShare-for-OS-X-Lion/wiki/How-To-for-iOS)
 
