@@ -74,4 +74,4 @@ The framework and code is provided as-is, but if you need help or have suggestio
 For other Open Source projects of mine, please visit http://www.eternalstorms.at/opensource
 
 # I want to hear from you
-If you use ESSVideoShare in one of your projects, please [let me know](mailto:opensource@eternalstorms.at)! I'd love to hear about your apps!
+If you use ESSVideoShare in one of your projects, please [let me know](mailto:opensource@eternalstorms.at)! I'd love to hear about your apps and mention them here on this project page :) !!
