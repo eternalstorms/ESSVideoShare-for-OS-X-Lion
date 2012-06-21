@@ -1,4 +1,4 @@
-# ESSVideoShare.framework for OS X Lion ReadMe
+# ESSVideoShare.framework for OS X Lion and iOS ReadMe
 
 ## What is ESSVideoShare.framework?
 
