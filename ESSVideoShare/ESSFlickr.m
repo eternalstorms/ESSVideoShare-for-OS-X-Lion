@@ -743,8 +743,12 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 		[aString release];
 		aString = [bString retain];
 	}
-	
+
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+	NSString *returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntities(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
+#else
 	NSString *returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntitiesFlickr(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
+#endif
 	
 	if (returnString == nil)
 		returnString = aString;
@@ -752,7 +756,11 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 	{
 		aString = [returnString retain];
 		
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+		returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntities(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
+#else
 		returnString = (NSString *)[(NSString *)CFXMLCreateStringByUnescapingEntitiesFlickr(kCFAllocatorDefault, (CFStringRef)[aString autorelease], NULL) autorelease];
+#endif
 		if (returnString == nil)
 			returnString = aString;
 	}
