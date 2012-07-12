@@ -98,8 +98,18 @@
 	double delayInSeconds = 0.5;
 	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
 	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-		self.navigationItem.leftBarButtonItem.enabled = YES;
-		self.navigationItem.rightBarButtonItem.enabled = YES;
+		UIBarButtonItem *btn = [[UIBarButtonItem alloc] initWithTitle:ESSLocalizedString(@"ESSVimeoiOSCancel", nil)
+																style:UIBarButtonItemStyleBordered
+															   target:self
+															   action:@selector(cancel:)];
+		self.navigationItem.leftBarButtonItem = btn;
+		[btn release];
+		btn = [[UIBarButtonItem alloc] initWithTitle:ESSLocalizedString(@"ESSVimeoiOSLogin", nil)
+											   style:UIBarButtonItemStyleDone
+											  target:self
+											  action:@selector(login:)];
+		self.navigationItem.rightBarButtonItem = btn;
+		[btn release];
 	});
 }
 

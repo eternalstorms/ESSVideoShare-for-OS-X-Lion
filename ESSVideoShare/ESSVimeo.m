@@ -46,6 +46,52 @@
 	self._byteSizeOfVideo = (NSUInteger)[[[NSFileManager defaultManager] attributesOfItemAtPath:url.fileReferenceURL.path error:nil] fileSize];
 	self._authToken = [[[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:@"essvimeo" prefix:@"essvimeovideoupload"] autorelease];
 	
+	NSURL *testURL = [NSURL URLWithString:@"http://www.vimeo.com"];
+	NSError *err = nil;
+	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
+	
+	if (dat == nil || err != nil)
+	{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+		NSWindow *win = [NSApp mainWindow];
+		if ([self.delegate respondsToSelector:@selector(ESSVimeoNeedsWindowToAttachWindowTo:)])
+			win = [self.delegate ESSVimeoNeedsWindowToAttachWindowTo:self];
+		if (win != nil)
+		{
+			NSBeginAlertSheet(ESSLocalizedString(@"ESSVimeoNoInternetConnection",nil),
+							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							  nil,
+							  nil,
+							  win, nil, nil, nil, nil,
+							  ESSLocalizedString(@"ESSVimeoNoInternetConnectionMsg",nil));
+		} else
+		{
+			NSRunAlertPanel(ESSLocalizedString(@"ESSVimeoNoInternetConnection",nil),
+							ESSLocalizedString(@"ESSVimeoNoInternetConnectionMsg",nil),
+							ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							nil, nil);
+		}
+#else
+		UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSVimeoNoInternetConnection",nil)
+													 message:ESSLocalizedString(@"ESSVimeoNoInternetConnectionMsg",nil)
+													delegate:nil
+										   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+										   otherButtonTitles:nil];
+		
+		[aV show];
+		[aV release];
+#endif
+		
+		if ([self.delegate respondsToSelector:@selector(ESSVimeoFinished:)])
+			[self.delegate ESSVimeoFinished:self];
+		
+		return;
+	}
+	
+	dat = nil;
+	err = nil;
+	testURL = nil;
+	
 #if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._winCtr = [[[ESSVimeoWindowController alloc] initWithVideoURL:url delegate:self] autorelease];
 	[self._winCtr loadWindow];

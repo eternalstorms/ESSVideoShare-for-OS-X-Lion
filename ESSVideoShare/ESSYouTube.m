@@ -197,6 +197,52 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 	if (self.developerKey == nil || ![[NSFileManager defaultManager] fileExistsAtPath:[url path]])
 		return;
 	
+	NSURL *testURL = [NSURL URLWithString:@"http://www.youtube.com"];
+	NSError *err = nil;
+	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
+	
+	if (dat == nil || err != nil)
+	{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+		NSWindow *win = [NSApp mainWindow];
+		if ([self.delegate respondsToSelector:@selector(ESSYouTubeNeedsWindowToAttachTo:)])
+			win = [self.delegate ESSYouTubeNeedsWindowToAttachTo:self];
+		if (win != nil)
+		{
+			NSBeginAlertSheet(ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil),
+							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							  nil,
+							  nil,
+							  win, nil, nil, nil, nil,
+							  ESSLocalizedString(@"ESSYouTubeNoInternetConnectionMsg",nil));
+		} else
+		{
+			NSRunAlertPanel(ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil),
+							ESSLocalizedString(@"ESSYouTubeNoInternetConnectionMsg",nil),
+							ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							nil, nil);
+		}
+#else
+		UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil)
+													 message:ESSLocalizedString(@"ESSYouTubeNoInternetConnectionMsg",nil)
+													delegate:nil
+										   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+										   otherButtonTitles:nil];
+		
+		[aV show];
+		[aV release];
+#endif
+		
+		if ([self.delegate respondsToSelector:@selector(ESSYouTubeDidFinish:)])
+			[self.delegate ESSYouTubeDidFinish:self];
+		
+		return;
+	}
+	
+	dat = nil;
+	err = nil;
+	testURL = nil;
+	
 #if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._ytWinCtr = [[[ESSYouTubeWindowController alloc] initWithDelegate:self videoURL:url] autorelease];
 	[self._ytWinCtr loadWindow];
@@ -239,8 +285,35 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 		} else
 		{
 			//check if valid
-			NSString *name = [self _nameForLoggedInUser]; //just used to check if the key we got is still valid
+			BOOL errorConnecting = NO;
+			NSString *name = [self _nameForLoggedInUserErrorConnecting:&errorConnecting]; //just used to check if the key we got is still valid
 #if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+			if (errorConnecting)
+			{
+				NSWindow *attachWindow = [NSApp mainWindow];
+				if ([self.delegate respondsToSelector:@selector(ESSYouTubeNeedsWindowToAttachTo:)])
+					attachWindow = [self.delegate ESSYouTubeNeedsWindowToAttachTo:self];
+				if (attachWindow != nil)
+				{
+					NSBeginAlertSheet(ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil),
+									  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+									  nil,
+									  nil,
+									  attachWindow, nil, nil, nil, nil,
+									  ESSLocalizedString(@"ESSYouTubeNoInternetConnectionMsg",nil));
+				} else
+				{
+					NSRunAlertPanel(ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil),
+									ESSLocalizedString(@"ESSYouTubeNoInternetConnectionMsg",nil),
+									ESSLocalizedString(@"ESSFlickrOKButton",nil),
+									nil, nil);
+				}
+				
+				if ([self.delegate respondsToSelector:@selector(ESSYouTubeDidFinish:)])
+					[self.delegate ESSYouTubeDidFinish:self];
+				
+				return;
+			}
 			if (name == nil)
 			{
 				//not valid
@@ -261,6 +334,21 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 			}
 #else
 			//iOS
+			
+			if (errorConnecting)
+			{
+				UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil)
+															 message:ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil)
+															delegate:nil
+												   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+												   otherButtonTitles:nil];
+				
+				[aV show];
+				[aV release];
+				
+				return;
+			}
+			
 			if (name == nil)
 			{
 				[self _deauthorize];
@@ -502,8 +590,10 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 	return dict;
 }
 
-- (NSString *)_nameForLoggedInUser
+- (NSString *)_nameForLoggedInUserErrorConnecting:(BOOL *)errorConnecting
 {
+	if (errorConnecting != nil)
+		*errorConnecting = NO;
 	if (self.developerKey == nil || self._authToken == nil)
 		return nil;
 	
@@ -518,7 +608,10 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 	NSError *error = nil;
 	NSData *retDat = [NSURLConnection sendSynchronousRequest:req returningResponse:nil error:&error];
 	if (retDat == nil)
+	{
+		*errorConnecting = YES;
 		return nil;
+	}
 	
 	NSString *retStr = [[[NSString alloc] initWithData:retDat encoding:NSUTF8StringEncoding] autorelease];
 	NSRange userNameRange = [retStr rangeOfString:@"<yt:username "];

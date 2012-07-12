@@ -42,6 +42,52 @@
 		return;
 	}
 	
+	NSURL *testURL = [NSURL URLWithString:@"http://www.facebook.com"];
+	NSError *err = nil;
+	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
+	
+	if (dat == nil || err != nil)
+	{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+		NSWindow *win = [NSApp mainWindow];
+		if ([self.delegate respondsToSelector:@selector(ESSFacebookNeedsWindowToAttachTo:)])
+			win = [self.delegate ESSFacebookNeedsWindowToAttachTo:self];
+		if (win != nil)
+		{
+			NSBeginAlertSheet(ESSLocalizedString(@"ESSFacebookNoInternetConnection",nil),
+							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							  nil,
+							  nil,
+							  win, nil, nil, nil, nil,
+							  ESSLocalizedString(@"ESSFacebookNoInternetConnectionMsg",nil));
+		} else
+		{
+			NSRunAlertPanel(ESSLocalizedString(@"ESSFacebookNoInternetConnection",nil),
+							ESSLocalizedString(@"ESSFacebookNoInternetConnectionMsg",nil),
+							ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							nil, nil);
+		}
+#else
+		UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFacebookNoInternetConnection",nil)
+													 message:ESSLocalizedString(@"ESSFacebookNoInternetConnectionMsg",nil)
+													delegate:nil
+										   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+										   otherButtonTitles:nil];
+		
+		[aV show];
+		[aV release];
+#endif
+		
+		if ([self.delegate respondsToSelector:@selector(ESSFacebookDidFinish:)])
+			[self.delegate ESSFacebookDidFinish:self];
+		
+		return;
+	}
+	
+	dat = nil;
+	err = nil;
+	testURL = nil;
+	
 #if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
 	self._fbWinCtr = [[[ESSFacebookWindowController alloc] initWithDelegate:self appID:self.appID videoURL:videoURL] autorelease];
 	[self._fbWinCtr loadWindow];

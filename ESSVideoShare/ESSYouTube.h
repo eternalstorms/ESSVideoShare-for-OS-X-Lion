@@ -60,7 +60,7 @@
 
 - (void)_deauthorize; //removes authorization token from userdefaults
 
-- (NSString *)_nameForLoggedInUser;
+- (NSString *)_nameForLoggedInUserErrorConnecting:(BOOL *)errorConnecting;
 
 - (void)_uploadVideoAtURL:(NSURL *)url
 				withTitle:(NSString *)title

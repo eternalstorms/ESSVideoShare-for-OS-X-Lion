@@ -17,6 +17,9 @@
 "ESSFacebookUploadSucceeded" = "Publishing to Facebook was successful.";
 "ESSFacebookUploadFailed" = "Publishing to Facebook has failed.";
 
+"ESSFacebookNoInternetConnection" = "Can't connect to Facebook";
+"ESSFacebookNoInternetConnectionMsg" = "There was an error connecting to Facebook.\nPlease check your internet connection and try again.";
+
 //iOS
 "Cancel" = "Cancel";
 "Login to Facebook" = "Facebook";
@@ -48,6 +51,9 @@ YOUTUBE
 "ESSYouTubeUploadSucceeded" = "Publishing to YouTube was successful.";
 "ESSYouTubeDefaultTitle" = "Movie";
 "ESSYouTubeInitializingUpload" = "Initializing Upload...";
+
+"ESSYouTubeNoInternetConnection" = "Can't connect to YouTube";
+"ESSYouTubeNoInternetConnectionMsg" = "There was an error connecting to YouTube.\nPlease check your internet connection and try again.";
 
 "ESSYouTubeiOSLoginTableViewFooter" = "";
 "ESSYouTubeiOSAccountInfoTableViewFooter" = "Tap to log in to a different YouTube account";
@@ -87,6 +93,9 @@ FLICKR
 "ESSFlickrDefaultTitle" = "Movie";
 "ESSFlickrUnknownUsername" = "Unknown Username";
 
+"ESSFlickrNoInternetConnection" = "Can't connect to flickr";
+"ESSFlickrNoInternetConnectionMsg" = "There was an error connecting to flickr.\nPlease check your internet connection and try again.";
+
 "ESSFlickriOSAccountInfoFooter" = "Tap to log in to a different flickr account";
 "ESSFlickriOSVideoInfoTagFooter" = "Multiple tags can be separated with commas";
 "ESSFlickriOSPrivacyInfoFooter" = "Private movies can only be viewed from your account and other Flickr accounts that you authorize";
@@ -119,6 +128,9 @@ VIMEO
 "ESSVimeoUploadSucceeded" = "Your movie was successfully published to Vimeo.";
 "ESSVimeoUnknownUsername" = "Unknown Username";
 "ESSVimeoDefaultTitle" = "Movie";
+
+"ESSVimeoNoInternetConnection" = "Can't connect to Vimeo";
+"ESSVimeoNoInternetConnectionMsg" = "There was an error connecting to Vimeo.\nPlease check your internet connection and try again.";
 
 "ESSVimeoUploadPercentageDone" = "%ld%% uploaded";
 "ESSVimeoWaitingForVimeoToVerifyVideo" = "Verifying Upload...";

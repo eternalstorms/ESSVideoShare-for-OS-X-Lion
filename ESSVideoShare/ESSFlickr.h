@@ -66,7 +66,7 @@
 
 - (void)_deauthorize;
 
-- (BOOL)_canUploadVideosKeyInvalidCheck:(BOOL *)keyInvalid;
+- (BOOL)_canUploadVideosKeyInvalidCheck:(BOOL *)keyInvalid errorConnecting:(BOOL *)errorConnecting;
 
 - (NSString *)_unescapedString:(NSString *)aString;
 

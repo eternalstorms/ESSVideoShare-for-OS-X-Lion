@@ -148,6 +148,52 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 	if (url == nil)
 		return;
 	
+	NSURL *testURL = [NSURL URLWithString:@"http://www.flickr.com"];
+	NSError *err = nil;
+	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
+	
+	if (dat == nil || err != nil)
+	{
+#if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
+		NSWindow *win = [NSApp mainWindow];
+		if ([self.delegate respondsToSelector:@selector(ESSFlickrNeedsWindowToAttachTo:)])
+			win = [self.delegate ESSFlickrNeedsWindowToAttachTo:self];
+		if (win != nil)
+		{
+			NSBeginAlertSheet(ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil),
+							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							  nil,
+							  nil,
+							  win, nil, nil, nil, nil,
+							  ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil));
+		} else
+		{
+			NSRunAlertPanel(ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil),
+							ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil),
+							ESSLocalizedString(@"ESSFlickrOKButton",nil),
+							nil, nil);
+		}
+#else
+		UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil)
+													 message:ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil)
+													delegate:nil
+										   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+										   otherButtonTitles:nil];
+		
+		[aV show];
+		[aV release];
+#endif
+		
+		if ([self.delegate respondsToSelector:@selector(ESSFlickrDidFinish:)])
+			[self.delegate ESSFlickrDidFinish:self];
+		
+		return;
+	}
+	
+	dat = nil;
+	err = nil;
+	testURL = nil;
+	
 	//check length of video
 	//if longer than 90 secs, refuse and show alert
 	AVURLAsset *vid = [[[AVURLAsset alloc] initWithURL:url options:nil] autorelease];
@@ -221,7 +267,8 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 	if (self._authToken != nil)
 	{
 		BOOL tokenInvalid = NO;
-		BOOL canUpload = [self _canUploadVideosKeyInvalidCheck:&tokenInvalid];
+		BOOL errorConnecting = NO;
+		BOOL canUpload = [self _canUploadVideosKeyInvalidCheck:&tokenInvalid errorConnecting:&errorConnecting];
 		if (canUpload)
 		{
 			//token valid
@@ -237,7 +284,7 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 			[self._viewCtr updateUsername:username];
 			[self._viewCtr switchToUploadViewWithAnimation:NO];
 #endif
-		} else
+		} else //canUpload == NO
 		{
 			if (tokenInvalid)
 			{
@@ -252,31 +299,65 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 			{
 				//user is over quota. dismiss and show alert sheet
 #if (!TARGET_OS_IPHONE && !TARGET_OS_EMBEDDED && !TARGET_IPHONE_SIMULATOR)
-				if (attachWindow != nil)
+				if (!errorConnecting)
 				{
-					NSBeginAlertSheet(ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil),
-									  ESSLocalizedString(@"ESSFlickrOKButton",nil),
-									  nil,
-									  nil,
-									  attachWindow, nil, nil, nil, nil,
-									  ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil));
-				} else
+					if (attachWindow != nil)
+					{
+						NSBeginAlertSheet(ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil),
+										  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+										  nil,
+										  nil,
+										  attachWindow, nil, nil, nil, nil,
+										  ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil));
+					} else
+					{
+						NSRunAlertPanel(ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil),
+										ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil),
+										ESSLocalizedString(@"ESSFlickrOKButton",nil),
+										nil, nil);
+					}
+				} else //errorConnecting
 				{
-					NSRunAlertPanel(ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil),
-									ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil),
-									ESSLocalizedString(@"ESSFlickrOKButton",nil),
-									nil, nil);
+					if (attachWindow != nil)
+					{
+						NSBeginAlertSheet(ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil),
+										  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+										  nil,
+										  nil,
+										  attachWindow, nil, nil, nil, nil,
+										  ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil));
+					} else
+					{
+						NSRunAlertPanel(ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil),
+										ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil),
+										ESSLocalizedString(@"ESSFlickrOKButton",nil),
+										nil, nil);
+					}
 				}
 #else
-				[currVCtr dismissViewControllerAnimated:YES completion:nil];
-				UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil)
-															 message:ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil)
-															delegate:nil
-												   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
-												   otherButtonTitles:nil];
-				
-				[aV show];
-				[aV release];
+				if (!errorConnecting)
+				{
+					[currVCtr dismissViewControllerAnimated:YES completion:nil];
+					UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrUserOverVideoQuota",nil)
+																 message:ESSLocalizedString(@"ESSFlickrUserOverVideoQuotaMsg",nil)
+																delegate:nil
+													   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+													   otherButtonTitles:nil];
+					
+					[aV show];
+					[aV release];
+				} else //errorConnecting == YES
+				{
+					[currVCtr dismissViewControllerAnimated:YES completion:nil];
+					UIAlertView *aV = [[UIAlertView alloc] initWithTitle:ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil)
+																 message:ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil)
+																delegate:nil
+													   cancelButtonTitle:ESSLocalizedString(@"ESSFlickrOKButton", nil)
+													   otherButtonTitles:nil];
+					
+					[aV show];
+					[aV release];
+				}
 #endif
 				
 				if ([self.delegate respondsToSelector:@selector(ESSFlickrDidFinish:)])
@@ -493,7 +574,7 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 							} else
 							{
 								//auth worked
-								if ([self _canUploadVideosKeyInvalidCheck:nil] == YES)
+								if ([self _canUploadVideosKeyInvalidCheck:nil errorConnecting:nil] == YES)
 								{
 									//let windowobject know about it, show upload settings
 									//set name
@@ -622,7 +703,7 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 							} else
 							{
 								//auth worked
-								if ([self _canUploadVideosKeyInvalidCheck:nil] == YES)
+								if ([self _canUploadVideosKeyInvalidCheck:nil errorConnecting:nil] == YES)
 								{
 									//let windowobject know about it, show upload settings
 									//set name
@@ -661,10 +742,12 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 }
 #endif
 
-- (BOOL)_canUploadVideosKeyInvalidCheck:(BOOL *)keyInvalid
+- (BOOL)_canUploadVideosKeyInvalidCheck:(BOOL *)keyInvalid errorConnecting:(BOOL *)errorConnecting
 {
 	if (keyInvalid)
 		*keyInvalid = NO;
+	if (errorConnecting)
+		*errorConnecting = NO;
 	
 	if (self._authToken == nil)
 		return NO;
@@ -695,7 +778,10 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 	[req release];
 	
 	if (err != nil || retDat == nil)
+	{
+		*errorConnecting = YES;
 		return NO;
+	}
 	
 	NSString *str = [[[NSString alloc] initWithData:retDat encoding:NSUTF8StringEncoding] autorelease];
 	
