@@ -46,7 +46,7 @@
 	self._byteSizeOfVideo = (NSUInteger)[[[NSFileManager defaultManager] attributesOfItemAtPath:url.fileReferenceURL.path error:nil] fileSize];
 	self._authToken = [[[OAToken alloc] initWithUserDefaultsUsingServiceProviderName:@"essvimeo" prefix:@"essvimeovideoupload"] autorelease];
 	
-	NSURL *testURL = [NSURL URLWithString:@"http://www.vimeo.com"];
+	NSURL *testURL = [NSURL URLWithString:@"http://vimeo.com/api/v2/oddysseey/info.xml"];
 	NSError *err = nil;
 	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
 	

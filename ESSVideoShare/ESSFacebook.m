@@ -42,7 +42,7 @@
 		return;
 	}
 	
-	NSURL *testURL = [NSURL URLWithString:@"http://www.facebook.com"];
+	NSURL *testURL = [NSURL URLWithString:@"https://graph.facebook.com/1553396397"];
 	NSError *err = nil;
 	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
 	

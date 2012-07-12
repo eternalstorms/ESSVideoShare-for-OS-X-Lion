@@ -197,7 +197,7 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 	if (self.developerKey == nil || ![[NSFileManager defaultManager] fileExistsAtPath:[url path]])
 		return;
 	
-	NSURL *testURL = [NSURL URLWithString:@"http://www.youtube.com"];
+	NSURL *testURL = [NSURL URLWithString:@"http://gdata.youtube.com/feeds/api/users/oddysseey"];
 	NSError *err = nil;
 	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
 	
