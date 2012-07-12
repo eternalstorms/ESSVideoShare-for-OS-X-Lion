@@ -44,7 +44,9 @@
 	
 	NSURL *testURL = [NSURL URLWithString:@"https://graph.facebook.com/1553396397"];
 	NSError *err = nil;
-	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
+	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL
+																		   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+																	   timeoutInterval:60.0] returningResponse:nil error:&err];
 	
 	if (dat == nil || err != nil)
 	{

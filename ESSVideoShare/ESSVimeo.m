@@ -48,7 +48,9 @@
 	
 	NSURL *testURL = [NSURL URLWithString:@"http://vimeo.com/api/v2/oddysseey/info.xml"];
 	NSError *err = nil;
-	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
+	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL
+																		   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+																	   timeoutInterval:60.0] returningResponse:nil error:&err];
 	
 	if (dat == nil || err != nil)
 	{

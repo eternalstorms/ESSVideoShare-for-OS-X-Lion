@@ -150,7 +150,9 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 	
 	NSURL *testURL = [NSURL URLWithString:@"http://api.flickr.com/services/rest?method=flickr.test.null"];
 	NSError *err = nil;
-	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL] returningResponse:nil error:&err];
+	NSData *dat = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:testURL
+																		   cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+																	   timeoutInterval:60.0] returningResponse:nil error:&err];
 	
 	if (dat == nil || err != nil)
 	{
