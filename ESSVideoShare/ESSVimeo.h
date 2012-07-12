@@ -22,7 +22,7 @@
 
 #define VIMEO_OAUTH_REQUEST_TOKEN_URL @"http://vimeo.com/oauth/request_token"
 #define VIMEO_OAUTH_AUTH_URL @"http://vimeo.com/oauth/authorize"
-#define VIMEO_OAUTH_ACCESS_TOKEN_URL @"http://secure.vimeo.com/oauth/access_token"
+#define VIMEO_OAUTH_ACCESS_TOKEN_URL @"http://vimeo.com/oauth/access_token"
 
 @protocol ESSVimeoDelegate <NSObject>
 
