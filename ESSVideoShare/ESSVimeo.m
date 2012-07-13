@@ -60,12 +60,12 @@
 			win = [self.delegate ESSVimeoNeedsWindowToAttachWindowTo:self];
 		if (win != nil)
 		{
-			NSBeginAlertSheet(ESSLocalizedString(@"ESSVimeoNoInternetConnection",nil),
-							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
-							  nil,
-							  nil,
-							  win, nil, nil, nil, nil,
-							  ESSLocalizedString(@"ESSVimeoNoInternetConnectionMsg",nil));
+			NSBeginCriticalAlertSheet(ESSLocalizedString(@"ESSVimeoNoInternetConnection",nil),
+									  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+									  nil,
+									  nil,
+									  win, nil, nil, nil, nil,
+									  ESSLocalizedString(@"ESSVimeoNoInternetConnectionMsg",nil));
 		} else
 		{
 			NSRunAlertPanel(ESSLocalizedString(@"ESSVimeoNoInternetConnection",nil),

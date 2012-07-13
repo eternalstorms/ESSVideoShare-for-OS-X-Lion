@@ -56,12 +56,12 @@
 			win = [self.delegate ESSFacebookNeedsWindowToAttachTo:self];
 		if (win != nil)
 		{
-			NSBeginAlertSheet(ESSLocalizedString(@"ESSFacebookNoInternetConnection",nil),
-							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
-							  nil,
-							  nil,
-							  win, nil, nil, nil, nil,
-							  ESSLocalizedString(@"ESSFacebookNoInternetConnectionMsg",nil));
+			NSBeginCriticalAlertSheet(ESSLocalizedString(@"ESSFacebookNoInternetConnection",nil),
+									  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+									  nil,
+									  nil,
+									  win, nil, nil, nil, nil,
+									  ESSLocalizedString(@"ESSFacebookNoInternetConnectionMsg",nil));
 		} else
 		{
 			NSRunAlertPanel(ESSLocalizedString(@"ESSFacebookNoInternetConnection",nil),

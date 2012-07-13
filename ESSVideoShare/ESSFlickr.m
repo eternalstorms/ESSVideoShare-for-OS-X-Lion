@@ -162,12 +162,12 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 			win = [self.delegate ESSFlickrNeedsWindowToAttachTo:self];
 		if (win != nil)
 		{
-			NSBeginAlertSheet(ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil),
-							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
-							  nil,
-							  nil,
-							  win, nil, nil, nil, nil,
-							  ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil));
+			NSBeginCriticalAlertSheet(ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil),
+									  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+									  nil,
+									  nil,
+									  win, nil, nil, nil, nil,
+									  ESSLocalizedString(@"ESSFlickrNoInternetConnectionMsg",nil));
 		} else
 		{
 			NSRunAlertPanel(ESSLocalizedString(@"ESSFlickrNoInternetConnection",nil),
@@ -909,7 +909,7 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 	NSString *beginString = [NSString stringWithFormat:@"--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\n%@\r\n",title];
 	beginString = [beginString stringByAppendingFormat:@"--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name=\"description\"\r\n\r\n%@\r\n",description];
 	beginString = [beginString stringByAppendingFormat:@"--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name=\"tags\"\r\n\r\n%@\r\n",tagsString];
-	beginString = [beginString stringByAppendingFormat:@"--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name=\"is_public\"\r\n\r\n%ld\r\n",(!makePrivate)];
+	beginString = [beginString stringByAppendingFormat:@"--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name=\"is_public\"\r\n\r\n%d\r\n",(!makePrivate)];
 	beginString = [beginString stringByAppendingFormat:@"--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name=\"hidden\"\r\n\r\n%@\r\n",(makePrivate ? @"2":@"1")];
 	beginString = [beginString stringByAppendingString:@"--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name=\"async\"\r\n\r\n0\r\n"];
 	

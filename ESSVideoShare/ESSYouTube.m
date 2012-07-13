@@ -211,12 +211,12 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 			win = [self.delegate ESSYouTubeNeedsWindowToAttachTo:self];
 		if (win != nil)
 		{
-			NSBeginAlertSheet(ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil),
-							  ESSLocalizedString(@"ESSFlickrOKButton",nil),
-							  nil,
-							  nil,
-							  win, nil, nil, nil, nil,
-							  ESSLocalizedString(@"ESSYouTubeNoInternetConnectionMsg",nil));
+			NSBeginCriticalAlertSheet(ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil),
+									  ESSLocalizedString(@"ESSFlickrOKButton",nil),
+									  nil,
+									  nil,
+									  win, nil, nil, nil, nil,
+									  ESSLocalizedString(@"ESSYouTubeNoInternetConnectionMsg",nil));
 		} else
 		{
 			NSRunAlertPanel(ESSLocalizedString(@"ESSYouTubeNoInternetConnection",nil),
