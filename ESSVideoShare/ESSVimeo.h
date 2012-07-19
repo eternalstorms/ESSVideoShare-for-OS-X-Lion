@@ -20,9 +20,9 @@
 
 #define VIMEO_API_CALL_URL @"http://vimeo.com/api/rest/v2/"
 
-#define VIMEO_OAUTH_REQUEST_TOKEN_URL @"http://vimeo.com/oauth/request_token"
-#define VIMEO_OAUTH_AUTH_URL @"http://vimeo.com/oauth/authorize"
-#define VIMEO_OAUTH_ACCESS_TOKEN_URL @"http://vimeo.com/oauth/access_token"
+#define VIMEO_OAUTH_REQUEST_TOKEN_URL @"https://vimeo.com/oauth/request_token"
+#define VIMEO_OAUTH_AUTH_URL @"https://vimeo.com/oauth/authorize"
+#define VIMEO_OAUTH_ACCESS_TOKEN_URL @"https://vimeo.com/oauth/access_token"
 
 @protocol ESSVimeoDelegate <NSObject>
 

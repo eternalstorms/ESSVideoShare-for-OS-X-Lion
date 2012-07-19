@@ -157,12 +157,12 @@
 		OAMutableURLRequest *req = [[OAMutableURLRequest alloc] initWithURL:url consumer:self._oaconsumer token:nil realm:nil signatureProvider:self._sigProv];
 		[req setCachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData];
 		[req setHTTPMethod:@"GET"];
-		[req setOAuthParameterName:@"oauth_callback" withValue:@"oob"]; //oob
-		/*OARequestParameter *par = [[OARequestParameter alloc] initWithName:@"oauth_callback" value:@"essvimeo:"]; //oob
+		//[req setOAuthParameterName:@"oauth_callback" withValue:@"oob"]; //oob
+		OARequestParameter *par = [[OARequestParameter alloc] initWithName:@"oauth_callback" value:@"oob"]; //essvimeo:
 		 NSMutableArray *params = [NSMutableArray arrayWithArray:[req parameters]];
 		 [params addObject:par];
 		 [par release];
-		 [req setParameters:params];*/
+		 [req setParameters:params];
 		[req prepare];
 		
 		NSError *err = nil;
