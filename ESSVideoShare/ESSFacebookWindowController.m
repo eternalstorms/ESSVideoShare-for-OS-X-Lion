@@ -48,6 +48,20 @@
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
 }
 
+- (void)awakeFromNib
+{
+	self.window.delegate = self;
+}
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+	double delayInSeconds = 0.65;
+	dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+	dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+		[NSApp endSheet:self.window];
+	});
+}
+
 - (void)switchToUploadViewWithAnimation:(BOOL)shouldAnimate
 {
 	[self.webView removeFromSuperview];

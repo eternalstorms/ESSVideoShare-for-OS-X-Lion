@@ -18,7 +18,7 @@
 
 @end
 
-@interface ESSFacebookWindowController : NSWindowController
+@interface ESSFacebookWindowController : NSWindowController <NSWindowDelegate>
 
 @property (retain) IBOutlet WebView *webView;
 @property (assign) IBOutlet NSButton *uploadButton;
