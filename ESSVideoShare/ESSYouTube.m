@@ -611,7 +611,8 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 	NSData *retDat = [NSURLConnection sendSynchronousRequest:req returningResponse:nil error:&error];
 	if (retDat == nil)
 	{
-		*errorConnecting = YES;
+		if (errorConnecting)
+			*errorConnecting = YES;
 		return nil;
 	}
 	

@@ -781,7 +781,8 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 	
 	if (err != nil || retDat == nil)
 	{
-		*errorConnecting = YES;
+		if (errorConnecting)
+			*errorConnecting = YES;
 		return NO;
 	}
 	
