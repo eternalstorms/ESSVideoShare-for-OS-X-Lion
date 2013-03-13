@@ -822,7 +822,10 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 {
 	[aString retain];
 	if (aString == nil || aString.length == 0)
+	{
+		[aString release];
 		return nil;
+	}
 	
 	NSString *bString = [aString stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	
