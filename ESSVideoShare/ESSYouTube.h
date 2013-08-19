@@ -26,6 +26,7 @@
 #else
 - (UIViewController *)ESSYouTubeNeedsCurrentViewControllerToAttachTo:(ESSYouTube *)youtube;
 #endif
+- (void)ESSYouTubeDidUploadVideoWithYouTubeURL:(NSURL *)url;
 - (void)ESSYouTubeDidFinish:(ESSYouTube *)youtube;
 
 @end

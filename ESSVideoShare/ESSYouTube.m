@@ -873,7 +873,8 @@ CFStringRef CFXMLCreateStringByUnescapingEntities(CFAllocatorRef allocator, CFSt
 				else
 					[self._ytViewCtr uploadFinishedWithYouTubeVideoURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@",vidID]]];
 #endif
-				
+				if ([self.delegate respondsToSelector:@selector(ESSYouTubeDidUploadVideoWithYouTubeURL:)])
+					[self.delegate ESSYouTubeDidUploadVideoWithYouTubeURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.youtube.com/watch?v=%@",vidID]]];
 				[vidID release];
 			});
 		}

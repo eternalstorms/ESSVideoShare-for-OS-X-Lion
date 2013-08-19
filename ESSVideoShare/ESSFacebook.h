@@ -27,6 +27,7 @@
 #endif
 
 @optional
+- (void)ESSFacebookDidUploadVideoWithFacebookURL:(NSURL *)url;
 - (void)ESSFacebookDidFinish:(ESSFacebook *)fb; //sent so user of this class can release their fb object
 
 @end

@@ -725,6 +725,8 @@
 #else
 			[self._viewCtr uploadFinishedWithURL:_videoURL];
 #endif
+			if ([self.delegate respondsToSelector:@selector(ESSVimeoDidUploadVideoWithVimeoURL:)])
+				[self.delegate ESSVimeoDidUploadVideoWithVimeoURL:_videoURL];
 		});
 	});
 }

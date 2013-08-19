@@ -32,6 +32,7 @@
 #else
 - (UIViewController *)ESSVimeoNeedsViewControllerToAttachTo:(ESSVimeo *)uploader;
 #endif
+- (void)ESSVimeoDidUploadVideoWithVimeoURL:(NSURL *)url;
 - (void)ESSVimeoFinished:(ESSVimeo *)uploader;
 
 @end

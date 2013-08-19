@@ -511,6 +511,8 @@
 		//iOS, use url
 		[self._fbViewCtr uploadFinishedWithFacebookVideoURL:url];
 #endif
+		if ([self.delegate respondsToSelector:@selector(ESSFacebookDidUploadVideoWithFacebookURL:)])
+			[self.delegate ESSFacebookDidUploadVideoWithFacebookURL:url];
 	}
 	self._uploadedObjectID = nil;
 }

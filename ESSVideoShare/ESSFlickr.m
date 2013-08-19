@@ -1144,6 +1144,8 @@ CFStringRef CFXMLCreateStringByUnescapingEntitiesFlickr(CFAllocatorRef allocator
 #else
 				[self._viewCtr uploadFinishedWithURL:[url autorelease]];
 #endif
+				if ([self.delegate respondsToSelector:@selector(ESSFlickrDidUploadVideoWithFlickrURL:)])
+					[self.delegate ESSFlickrDidUploadVideoWithFlickrURL:url];
 			});
 			return;
 		}

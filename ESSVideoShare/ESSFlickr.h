@@ -28,6 +28,7 @@
 #else
 - (UIViewController *)ESSFlickrNeedsViewController:(ESSFlickr *)flickr;
 #endif
+- (void)ESSFlickrDidUploadVideoWithFlickrURL:(NSURL *)url;
 - (void)ESSFlickrDidFinish:(ESSFlickr *)flickr;
 
 @end
